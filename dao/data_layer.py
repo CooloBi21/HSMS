@@ -24,18 +24,24 @@ class DataLayer:
 
     @staticmethod
     def execute_non_query(sql: str, params: Iterable[Any] = ()) -> int:
-        with create_connection() as conn:
+        conn = create_connection()
+        try:
             cur = conn.execute(sql, tuple(params))
             conn.commit()
             return cur.rowcount
+        finally:
+            conn.close()
 
     @staticmethod
     def fetch_all(sql: str, params: Iterable[Any] = ()) -> list[dict]:
-        with create_connection() as conn:
+        conn = create_connection()
+        try:
             cur = conn.execute(sql, tuple(params))
             rows = cur.fetchall()
             columns = [column[0] for column in cur.description] if cur.description else None
-        return [_row_to_dict(row, columns) for row in rows]
+            return [_row_to_dict(row, columns) for row in rows]
+        finally:
+            conn.close()
 
     @staticmethod
     def fetch_one(sql: str, params: Iterable[Any] = ()) -> dict | None:
