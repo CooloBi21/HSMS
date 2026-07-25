@@ -322,7 +322,16 @@ Các route xác thực nền:
 - `/auth/logout`: đăng xuất bằng `POST`.
 - `/auth/change-password`: đổi mật khẩu.
 - `/auth/activity-log`: activity log dành cho admin.
+- `/auth/accounts`: quản lý tài khoản dành cho admin.
 - `/health`: healthcheck không yêu cầu đăng nhập.
+
+Các module MVP Web:
+
+- `/`: dashboard có tổng học sinh, lớp, giáo viên, điểm trung bình, phân bố học lực, học sinh theo lớp, cảnh báo dữ liệu và hoạt động gần đây.
+- `/students/`: danh sách, thêm, sửa, xóa, tìm kiếm, lọc lớp và phân trang học sinh.
+- `/classes/`: danh sách, thêm, sửa, xóa lớp, lọc khối và hiển thị sĩ số.
+- `/teachers/`: danh sách, thêm, sửa, xóa giáo viên, lọc trạng thái và validation email/số điện thoại.
+- `/auth/accounts`: tạo tài khoản, xem vai trò/trạng thái và cập nhật trạng thái tài khoản.
 
 ## Kiểm tra nhanh
 

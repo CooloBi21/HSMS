@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Giáo viên | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div><h1 class="h2 mb-1">Giáo viên</h1><p class="text-secondary mb-0">Quản lý giáo viên, lọc trạng thái và kiểm tra dữ liệu liên hệ.</p></div>
+  <a class="btn btn-primary" href="{{ url_for('teachers.create') }}">Thêm giáo viên</a>
+</section>
+<form class="filter-bar mb-3" method="get">
+  <select class="form-select" name="status">
+    <option value="">Tất cả trạng thái</option>
+    {% for status in statuses %}
+      <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-outline-primary" type="submit">Lọc</button>
+</form>
+<div class="table-responsive bg-white border rounded-2">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Mã</th><th>Họ tên</th><th>Email</th><th>Điện thoại</th><th>Môn</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead>
+    <tbody>
+      {% for teacher in teachers %}
+        <tr>
+          <td>{{ teacher.code }}</td><td>{{ teacher.full_name }}</td><td>{{ teacher.email or "" }}</td><td>{{ teacher.phone or "" }}</td><td>{{ teacher.subject or "" }}</td><td>{{ teacher.status }}</td>
+          <td>{% with edit_url=url_for('teachers.edit', teacher_id=teacher.id), delete_url=url_for('teachers.delete', teacher_id=teacher.id) %}{% include "components/table_actions.html" %}{% endwith %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-center text-secondary py-4">Chưa có giáo viên.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

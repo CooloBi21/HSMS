@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Lớp học | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div><h1 class="h2 mb-1">Lớp học</h1><p class="text-secondary mb-0">Quản lý lớp, lọc khối và hiển thị sĩ số.</p></div>
+  <a class="btn btn-primary" href="{{ url_for('classes.create') }}">Thêm lớp</a>
+</section>
+<form class="filter-bar mb-3" method="get">
+  <select class="form-select" name="grade_level">
+    <option value="">Tất cả khối</option>
+    {% for grade in grades %}
+      <option value="{{ grade }}" {% if selected_grade == grade %}selected{% endif %}>Khối {{ grade }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-outline-primary" type="submit">Lọc</button>
+</form>
+<div class="table-responsive bg-white border rounded-2">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Mã</th><th>Tên lớp</th><th>Khối</th><th>Sĩ số</th><th class="text-end">Thao tác</th></tr></thead>
+    <tbody>
+      {% for item in classes %}
+        <tr>
+          <td>{{ item.code }}</td><td>{{ item.name }}</td><td>{{ item.grade_level or "" }}</td><td>{{ item.students.count() }}</td>
+          <td>{% with edit_url=url_for('classes.edit', class_id=item.id), delete_url=url_for('classes.delete', class_id=item.id) %}{% include "components/table_actions.html" %}{% endwith %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="text-center text-secondary py-4">Chưa có lớp học.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -17,6 +17,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
         {% elif current_user.is_authenticated and current_user.role == "teacher" %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>

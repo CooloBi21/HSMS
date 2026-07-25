@@ -3,23 +3,67 @@
 {% block title %}Tổng quan | HSMS Web{% endblock %}
 
 {% block content %}
-<section class="page-header">
+<section class="page-header mb-3">
   <div>
-    <p class="text-uppercase text-primary fw-semibold mb-2">Giai đoạn 1</p>
-    <h1 class="h2 mb-2">Nền web HSMS đã sẵn sàng</h1>
-    <p class="text-secondary mb-0">Flask app khởi động bằng application factory, blueprint, extensions, error handler và logging tập trung.</p>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Dashboard</p>
+    <h1 class="h2 mb-2">Tổng quan hệ thống</h1>
+    <p class="text-secondary mb-0">Theo dõi dữ liệu học sinh, lớp, giáo viên và hoạt động gần đây.</p>
   </div>
-  <a class="btn btn-primary" href="{{ url_for('dashboard.healthcheck') }}">Healthcheck</a>
 </section>
 
-<section class="row g-3 mt-2">
-  {% for title, endpoint in modules %}
-    <div class="col-12 col-sm-6 col-xl-3">
-      <a class="module-card" href="{{ url_for(endpoint) }}">
-        <span>{{ title }}</span>
-        <small>Blueprint đã đăng ký</small>
-      </a>
+<section class="row g-3 mb-3">
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Học sinh</span><strong>{{ data.summary.students }}</strong></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Lớp học</span><strong>{{ data.summary.classes }}</strong></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Giáo viên</span><strong>{{ data.summary.teachers }}</strong></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Điểm TB</span><strong>{{ data.summary.average_score }}</strong></div></div>
+</section>
+
+<section class="row g-3">
+  <div class="col-12 col-xl-6">
+    <div class="content-panel">
+      <h2 class="h5">Phân bố học lực</h2>
+      <div class="chart-list">
+        {% for label, count in data.academic_distribution %}
+          <div><span>{{ label }}</span><strong>{{ count }}</strong></div>
+        {% else %}
+          <p class="text-secondary mb-0">Chưa có dữ liệu điểm.</p>
+        {% endfor %}
+      </div>
     </div>
-  {% endfor %}
+  </div>
+  <div class="col-12 col-xl-6">
+    <div class="content-panel">
+      <h2 class="h5">Học sinh theo lớp</h2>
+      <div class="chart-list">
+        {% for name, count in data.students_by_class %}
+          <div><span>{{ name }}</span><strong>{{ count }}</strong></div>
+        {% else %}
+          <p class="text-secondary mb-0">Chưa có lớp học.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-6">
+    <div class="content-panel">
+      <h2 class="h5">Cảnh báo dữ liệu</h2>
+      {% for warning in data.warnings %}
+        <div class="alert alert-warning py-2 mb-2">{{ warning }}</div>
+      {% else %}
+        <p class="text-secondary mb-0">Không có cảnh báo dữ liệu.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-12 col-xl-6">
+    <div class="content-panel">
+      <h2 class="h5">Hoạt động gần đây</h2>
+      <div class="activity-list">
+        {% for log in data.recent_activity %}
+          <div><strong>{{ log.action }}</strong><span>{{ log.actor.username if log.actor else "Hệ thống" }} · {{ log.module }}</span></div>
+        {% else %}
+          <p class="text-secondary mb-0">Chưa có hoạt động.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}
