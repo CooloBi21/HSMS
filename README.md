@@ -13,6 +13,25 @@ HSMS là ứng dụng desktop dùng để quản lý toàn bộ quy trình vận
 - `configparser` để đọc cấu hình hệ thống
 - Kiến trúc provider/data layer để có thể mở rộng kết nối CSDL
 
+## Định hướng phiên bản
+
+### Desktop
+
+Phiên bản desktop hiện tại là bản ổn định của HSMS, chạy bằng CustomTkinter và SQLite. Bản này được giữ lại để phục vụ báo cáo, kiểm thử nghiệp vụ và làm mốc khôi phục khi triển khai web/cloud.
+
+Mốc bảo vệ:
+
+- Tag khôi phục: `desktop-v1.0`
+- Nhánh desktop ổn định: `desktop-final`
+
+### Web
+
+Phiên bản web sẽ được xây dựng kế thừa nghiệp vụ đã có từ desktop, ưu tiên tái sử dụng model, service, quy tắc kiểm tra dữ liệu và cấu trúc phân tầng. Phần giao diện CustomTkinter sẽ được thay bằng Flask/Jinja/Bootstrap. CSDL triển khai web dự kiến chuyển sang PostgreSQL thông qua SQLAlchemy.
+
+### Deployment
+
+Các công việc Docker, PostgreSQL, Nginx, Cloudflare Tunnel và Cloudflare Access được thực hiện trên nhánh `cloud-deployment`. Nhánh này là nơi phát triển triển khai cloud, không sửa trực tiếp vào `desktop-final`.
+
 ## Cấu trúc dự án
 
 ```text
