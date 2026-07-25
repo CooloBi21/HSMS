@@ -1,44 +1,52 @@
-<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+<nav class="navbar navbar-expand-xl bg-white border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold text-primary" href="{{ url_for('dashboard.index') }}">HSMS Web</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Mở menu">
+    <button class="navbar-toggler touch-target" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav" aria-controls="mainNav" aria-label="Mở menu">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if current_user.is_authenticated and current_user.role == "admin" %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
-        {% elif current_user.is_authenticated and current_user.role == "teacher" %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.assigned') }}">Nhập điểm</a></li>
-        {% elif current_user.is_authenticated and current_user.role == "student" %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.me') }}">Hồ sơ của tôi</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.my_class') }}">Lớp của tôi</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.my_schedule') }}">Lịch học</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.my_grades') }}">Điểm số</a></li>
-        {% endif %}
-      </ul>
-      {% if current_user.is_authenticated %}
-        <a class="btn btn-outline-secondary me-2" href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
-        <form method="post" action="{{ url_for('auth.logout') }}" class="d-inline">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <button class="btn btn-outline-primary" type="submit">Đăng xuất</button>
-        </form>
-      {% else %}
-        <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Đăng nhập</a>
-      {% endif %}
+    <div class="offcanvas offcanvas-end nav-canvas" tabindex="-1" id="mainNav" aria-labelledby="mainNavLabel">
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="mainNavLabel">HSMS Web</h5>
+        <button type="button" class="btn-close touch-target" data-bs-dismiss="offcanvas" aria-label="Đóng menu"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+          {% if current_user.is_authenticated and current_user.role == "admin" %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
+          {% elif current_user.is_authenticated and current_user.role == "teacher" %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.assigned') }}">Nhập điểm</a></li>
+          {% elif current_user.is_authenticated and current_user.role == "student" %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.me') }}">Hồ sơ của tôi</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.my_class') }}">Lớp của tôi</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('training.my_schedule') }}">Lịch học</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.my_grades') }}">Điểm số</a></li>
+          {% endif %}
+        </ul>
+        <div class="nav-actions">
+          {% if current_user.is_authenticated %}
+            <a class="btn btn-outline-secondary touch-target" href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
+            <form method="post" action="{{ url_for('auth.logout') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-outline-primary touch-target" type="submit">Đăng xuất</button>
+            </form>
+          {% else %}
+            <a class="btn btn-outline-primary touch-target" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </nav>

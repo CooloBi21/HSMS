@@ -366,3 +366,16 @@ python -c "from ui.app import HSMSApp; print('app import ok')"
 - Không tạo kết nối CSDL trực tiếp trong service.
 - Các module mới nên dùng tên file tiếng Anh để thống nhất với cấu trúc hiện tại.
 - Các tích hợp ngoài như thanh toán thật, in phôi bằng, chữ ký số, email/SMS hoặc cổng học sinh online cần được tách thành module tích hợp riêng.
+
+## Responsive và truy cập nhiều thiết bị
+
+Phiên bản web đã được gia cố responsive cho các độ rộng chính: điện thoại 360 px, tablet 768 px, laptop 1024 px và desktop 1280 px trở lên. Thanh điều hướng chuyển sang off-canvas trên màn hình nhỏ, bảng dữ liệu nằm trong wrapper responsive, form không làm tràn toàn trang, button có kích thước phù hợp thao tác cảm ứng và modal được giới hạn theo chiều cao màn hình.
+
+Các kiểm tra tự động hiện có xác nhận:
+
+- Layout có viewport meta và off-canvas navigation.
+- CSS có guard chống tràn ngang, bảng responsive, button cảm ứng và modal giới hạn chiều cao.
+- Tài khoản học sinh không truy cập được route quản trị và chỉ xem hồ sơ của chính mình.
+- Web app trong thư mục `app/` không phụ thuộc CustomTkinter/tkinter.
+
+Các kiểm thử bằng thiết bị thật như Android, iPhone/iPad, mạng 4G/5G và hai thiết bị đăng nhập đồng thời cần thực hiện sau khi triển khai lên VM/Docker/Cloudflare vì phụ thuộc môi trường phần cứng và mạng ngoài.

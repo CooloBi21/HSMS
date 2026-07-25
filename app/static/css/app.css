@@ -2,11 +2,48 @@
   --hsms-bg: #f4f6f8;
   --hsms-border: #d9e0e8;
   --hsms-text: #111827;
+  --hsms-primary: #2f6fed;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
   background: var(--hsms-bg);
   color: var(--hsms-text);
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app-shell {
+  max-width: 1600px;
+}
+
+.nav-canvas {
+  max-width: min(92vw, 380px);
+}
+
+.navbar .nav-link {
+  border-radius: 8px;
+  min-height: 44px;
+  padding: 0.65rem 0.8rem;
+}
+
+.navbar .nav-link:hover {
+  background: #eef4ff;
+}
+
+.nav-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.touch-target,
+.btn {
+  min-height: 44px;
 }
 
 .page-header {
@@ -18,6 +55,7 @@ body {
   gap: 1rem;
   justify-content: space-between;
   padding: 1.25rem;
+  min-width: 0;
 }
 
 .module-card {
@@ -82,7 +120,7 @@ body {
 }
 
 .metric-box strong {
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 4vw, 2rem);
 }
 
 .chart-list,
@@ -98,6 +136,13 @@ body {
   display: flex;
   justify-content: space-between;
   padding-bottom: 0.5rem;
+  min-width: 0;
+}
+
+.chart-list span,
+.activity-list strong,
+.activity-list span {
+  overflow-wrap: anywhere;
 }
 
 .activity-list div {
@@ -113,7 +158,11 @@ body {
 .filter-bar {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, 240px) minmax(120px, auto);
+}
+
+.filter-bar > * {
+  min-width: 0;
 }
 
 .form-grid {
@@ -129,6 +178,7 @@ body {
 .form-grid label {
   display: grid;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .span-2 {
@@ -147,6 +197,31 @@ body {
   max-width: 130px;
 }
 
+.table-responsive {
+  max-width: 100%;
+}
+
+.table {
+  min-width: 720px;
+}
+
+.alert {
+  overflow-wrap: anywhere;
+}
+
+.modal-dialog {
+  max-height: calc(100vh - 1rem);
+}
+
+.modal-content {
+  max-height: calc(100vh - 1rem);
+  overflow: hidden;
+}
+
+.modal-body {
+  overflow-y: auto;
+}
+
 .profile-grid {
   display: grid;
   gap: 0.75rem 1rem;
@@ -161,6 +236,29 @@ body {
 
 .profile-grid dd {
   margin: 0;
+}
+
+@media (max-width: 1199.98px) {
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .navbar-nav {
+    gap: 0.25rem;
+  }
+
+  .nav-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nav-actions .btn,
+  .nav-actions form,
+  .nav-actions button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -182,5 +280,24 @@ body {
 
   .span-2 {
     grid-column: span 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .page-header,
+  .content-panel,
+  .metric-box,
+  .auth-panel {
+    padding: 1rem;
+  }
+
+  .table {
+    font-size: 0.92rem;
+    min-width: 640px;
   }
 }
