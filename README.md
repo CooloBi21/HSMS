@@ -379,3 +379,58 @@ Các kiểm tra tự động hiện có xác nhận:
 - Web app trong thư mục `app/` không phụ thuộc CustomTkinter/tkinter.
 
 Các kiểm thử bằng thiết bị thật như Android, iPhone/iPad, mạng 4G/5G và hai thiết bị đăng nhập đồng thời cần thực hiện sau khi triển khai lên VM/Docker/Cloudflare vì phụ thuộc môi trường phần cứng và mạng ngoài.
+
+## Docker hóa và triển khai VM
+
+Phiên bản web có thể chạy bằng Docker Compose với các service:
+
+- `hsms-web`: Flask app chạy bằng Gunicorn trên port nội bộ `8000`.
+- `postgres`: PostgreSQL nội bộ trên Docker network, không publish port `5432`.
+- `nginx`: reverse proxy đến `hsms-web:8000`, publish local VM qua `127.0.0.1:8080`.
+- `cloudflared`: Cloudflare Tunnel, token lấy từ `.env`.
+- `backup`: chạy `pg_dump` định kỳ và lưu file vào thư mục `backups/`.
+
+Luồng container:
+
+```text
+cloudflared -> nginx:80 -> hsms-web:8000 -> postgres:5432
+```
+
+Tạo `.env` từ `.env.example` và điền secret thật:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Các biến bắt buộc cần đặt trước khi chạy production:
+
+- `SECRET_KEY`
+- `POSTGRES_PASSWORD`
+- `ADMIN_PASSWORD`
+- `CLOUDFLARE_TUNNEL_TOKEN`
+
+Chạy hệ thống:
+
+```powershell
+docker compose up -d --build
+```
+
+Kiểm tra trạng thái:
+
+```powershell
+docker compose ps
+```
+
+Kiểm tra nội bộ trong VM:
+
+```powershell
+curl http://127.0.0.1:8080/health
+```
+
+Với Cloudflare Tunnel dạng token, Public Hostname `hsms.coolobi.id.vn` cần được cấu hình trong Cloudflare Zero Trust để trỏ origin/service về:
+
+```text
+http://nginx:80
+```
+
+Không commit `.env`, token tunnel, credential Cloudflare, PostgreSQL data, file backup database, database local hoặc log nhạy cảm.

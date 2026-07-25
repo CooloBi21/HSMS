@@ -3,6 +3,7 @@ from __future__ import annotations
 from importlib import import_module
 
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.commands import register_commands
 from app.config import get_config
@@ -15,6 +16,7 @@ def create_app(config_name: str | None = None) -> Flask:
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(get_config(config_name))
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     import_module("app.models")
 
     configure_logging(app)

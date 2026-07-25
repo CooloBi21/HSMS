@@ -19,6 +19,17 @@ instance/
 # Deployment/runtime
 backups/*
 !backups/.gitkeep
+postgres_data/
+cloudflared/
+cloudflare/
+*.pem
+*.key
+*.crt
+*.cert
+*.credentials.json
+*.dump
+*.sql.gz
+*.backup
 
 # IDE
 .vscode/
