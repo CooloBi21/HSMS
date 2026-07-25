@@ -25,6 +25,7 @@ class SchoolClass(TimestampMixin, db.Model):
     code = db.Column(db.String(30), nullable=False)
     name = db.Column(db.String(120), nullable=False)
     grade_level = db.Column(db.String(20), nullable=True)
+    capacity = db.Column(db.Integer, nullable=True)
     homeroom_teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id", ondelete="SET NULL"), nullable=True)
 
     students = db.relationship("Student", back_populates="school_class", lazy="dynamic")

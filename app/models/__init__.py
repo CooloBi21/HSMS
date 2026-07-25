@@ -4,7 +4,9 @@ from app.models.academic import SchoolClass, Student, Teacher, TeacherClassAssig
 from app.models.auth import AccountStatus, ActivityLog, Role, User
 from app.models.operations import (
     AdmissionApplication,
+    ClassSchedule,
     Course,
+    CourseRegistration,
     CourseSection,
     DiplomaRecord,
     GradeRecord,
@@ -18,7 +20,9 @@ __all__ = [
     "AccountStatus",
     "ActivityLog",
     "AdmissionApplication",
+    "ClassSchedule",
     "Course",
+    "CourseRegistration",
     "CourseSection",
     "DiplomaRecord",
     "GradeRecord",

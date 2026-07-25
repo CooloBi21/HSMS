@@ -90,10 +90,13 @@ class AdmissionWebService:
         application = AdmissionRepository.get(application_id)
         if not application:
             raise ValidationError("Không tìm thấy hồ sơ tuyển sinh.")
-        if application.status != "approved":
-            raise ValidationError("Chỉ hồ sơ đã trúng tuyển mới được nhập học.")
         if application.student_id:
             raise ValidationError("Hồ sơ đã được nhập học.")
+        if application.status != "approved":
+            raise ValidationError("Chỉ hồ sơ đã trúng tuyển mới được nhập học.")
+        if application.desired_class and application.desired_class.capacity is not None:
+            if application.desired_class.students.count() >= application.desired_class.capacity:
+                raise ValidationError("Lớp dự kiến đã đủ sĩ số.")
 
         student_code = AdmissionRepository.next_student_code()
         BusinessTransactionService.enroll_admission(application, student_code, actor)

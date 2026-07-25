@@ -333,6 +333,14 @@ Các module MVP Web:
 - `/teachers/`: danh sách, thêm, sửa, xóa giáo viên, lọc trạng thái và validation email/số điện thoại.
 - `/auth/accounts`: tạo tài khoản, xem vai trò/trạng thái và cập nhật trạng thái tài khoản.
 
+Các guard nghiệp vụ quan trọng đã được đặt ở tầng service:
+
+- Tuyển sinh: chỉ hồ sơ đạt mới nhập học, không nhập học hai lần, kiểm tra lớp/sĩ số và nhập học trong transaction.
+- Đào tạo: chặn đăng ký trùng, không tính bản ghi đã hủy như đăng ký active, chặn vượt sĩ số và trùng phòng/giáo viên/lớp.
+- Khảo thí: kiểm tra miền điểm, kiểm tra học sinh thuộc lớp/học phần, phúc khảo cập nhật kết quả, trọng số điểm truyền qua cấu hình service.
+- Tài chính: chặn thanh toán âm/vượt nợ, xóa thanh toán tính lại hóa đơn, xét quá hạn theo ngày đến hạn, chặn xóa hóa đơn đã có thanh toán, học bổng lấy điểm thực tế.
+- Tốt nghiệp: chặn cấp bằng khi chưa đạt, số bằng/sổ gốc unique, cấp bằng cập nhật trạng thái tốt nghiệp.
+
 ## Kiểm tra nhanh
 
 Kiểm tra cú pháp toàn bộ file Python:

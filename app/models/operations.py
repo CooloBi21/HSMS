@@ -71,6 +71,43 @@ class CourseSection(TimestampMixin, db.Model):
     school_class = db.relationship("SchoolClass", back_populates="sections")
     teacher = db.relationship("Teacher", back_populates="sections")
     grades = db.relationship("GradeRecord", back_populates="section", lazy="dynamic")
+    registrations = db.relationship("CourseRegistration", back_populates="section", lazy="dynamic")
+    schedules = db.relationship("ClassSchedule", back_populates="section", lazy="dynamic")
+
+
+class CourseRegistration(TimestampMixin, db.Model):
+    __tablename__ = "course_registrations"
+    __table_args__ = (
+        db.UniqueConstraint("section_id", "student_id", name="uq_course_registrations_scope"),
+        db.Index("ix_course_registrations_section", "section_id"),
+        db.Index("ix_course_registrations_student", "student_id"),
+        db.Index("ix_course_registrations_status", "status"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    section_id = db.Column(db.Integer, db.ForeignKey("course_sections.id", ondelete="CASCADE"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    status = db.Column(db.String(40), nullable=False, default="active")
+
+    section = db.relationship("CourseSection", back_populates="registrations")
+    student = db.relationship("Student")
+
+
+class ClassSchedule(TimestampMixin, db.Model):
+    __tablename__ = "class_schedules"
+    __table_args__ = (
+        db.Index("ix_class_schedules_section", "section_id"),
+        db.Index("ix_class_schedules_room_slot", "weekday", "start_period", "end_period", "room"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    section_id = db.Column(db.Integer, db.ForeignKey("course_sections.id", ondelete="CASCADE"), nullable=False)
+    weekday = db.Column(db.String(20), nullable=False)
+    start_period = db.Column(db.Integer, nullable=False)
+    end_period = db.Column(db.Integer, nullable=False)
+    room = db.Column(db.String(80), nullable=False)
+
+    section = db.relationship("CourseSection", back_populates="schedules")
 
 
 class TuitionInvoice(TimestampMixin, db.Model):
@@ -92,6 +129,7 @@ class TuitionInvoice(TimestampMixin, db.Model):
     total_amount = db.Column(db.Numeric(12, 2), nullable=False)
     paid_amount = db.Column(db.Numeric(12, 2), nullable=False, default=0)
     status = db.Column(db.String(40), nullable=False, default="unpaid")
+    due_date = db.Column(db.Date, nullable=True)
 
     student = db.relationship("Student", back_populates="tuition_invoices")
     payments = db.relationship("PaymentRecord", back_populates="invoice", lazy="dynamic", cascade="all, delete-orphan")
@@ -110,6 +148,7 @@ class PaymentRecord(TimestampMixin, db.Model):
     amount = db.Column(db.Numeric(12, 2), nullable=False)
     method = db.Column(db.String(60), nullable=False)
     transaction_ref = db.Column(db.String(120), nullable=True)
+    payment_date = db.Column(db.Date, nullable=True)
     notes = db.Column(db.Text, nullable=True)
 
     invoice = db.relationship("TuitionInvoice", back_populates="payments")
