@@ -332,6 +332,8 @@ Các module MVP Web:
 - `/classes/`: danh sách, thêm, sửa, xóa lớp, lọc khối và hiển thị sĩ số.
 - `/teachers/`: danh sách, thêm, sửa, xóa giáo viên, lọc trạng thái và validation email/số điện thoại.
 - `/auth/accounts`: tạo tài khoản, xem vai trò/trạng thái và cập nhật trạng thái tài khoản.
+- `/profiles/`: quản lý hồ sơ học sinh, cập nhật lý lịch, phụ huynh, trạng thái học tập và diện chính sách.
+- `/profiles/me`: học sinh xem hồ sơ của chính mình.
 
 Các guard nghiệp vụ quan trọng đã được đặt ở tầng service:
 

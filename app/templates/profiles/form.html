@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Cập nhật hồ sơ học sinh | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <h1 class="h2 mb-0">Cập nhật hồ sơ học sinh</h1>
+</section>
+
+<form class="content-panel form-grid" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Mã học sinh<input class="form-control" value="{{ student.code }}" disabled></label>
+  <label>Họ tên<input class="form-control" name="full_name" value="{{ student.full_name }}" required></label>
+  <label>Giới tính<select class="form-select" name="gender"><option value="">Chọn</option><option value="1" {% if student.gender == 1 %}selected{% endif %}>Nam</option><option value="0" {% if student.gender == 0 %}selected{% endif %}>Nữ</option></select></label>
+  <label>Lớp<select class="form-select" name="class_id"><option value="">Chưa phân lớp</option>{% for item in classes %}<option value="{{ item.id }}" {% if student.class_id == item.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}</select></label>
+  <label>Trạng thái<select class="form-select" name="learning_status">{% for status in statuses %}<option value="{{ status }}" {% if student.learning_status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label>
+  <label>Diện chính sách<select class="form-select" name="policy_type"><option value="">Không thuộc diện</option>{% for policy in policies %}<option value="{{ policy }}" {% if student.policy_type == policy %}selected{% endif %}>{{ policy }}</option>{% endfor %}</select></label>
+  <label>Phụ huynh<input class="form-control" name="parent_name" value="{{ student.parent_name or '' }}"></label>
+  <label>SĐT phụ huynh<input class="form-control" name="parent_phone" value="{{ student.parent_phone or '' }}"></label>
+  <label class="span-2">Hộ khẩu<input class="form-control" name="household" value="{{ student.household or '' }}"></label>
+  <label class="span-2">Địa chỉ liên hệ<input class="form-control" name="address" value="{{ student.address or '' }}"></label>
+  <div class="span-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Lưu hồ sơ</button><a class="btn btn-outline-secondary" href="{{ url_for('profiles.index') }}">Hủy</a></div>
+</form>
+{% endblock %}

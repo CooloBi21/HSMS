@@ -24,7 +24,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.assigned') }}">Nhập điểm</a></li>
         {% elif current_user.is_authenticated and current_user.role == "student" %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('students.me') }}">Hồ sơ của tôi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.me') }}">Hồ sơ của tôi</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.my_class') }}">Lớp của tôi</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('training.my_schedule') }}">Lịch học</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.my_grades') }}">Điểm số</a></li>

@@ -147,6 +147,28 @@ body {
   max-width: 130px;
 }
 
+.profile-grid {
+  display: grid;
+  gap: 0.75rem 1rem;
+  grid-template-columns: minmax(140px, 220px) 1fr;
+  margin: 0;
+}
+
+.profile-grid dt {
+  color: #667085;
+  font-weight: 600;
+}
+
+.profile-grid dd {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .page-header {
     align-items: stretch;

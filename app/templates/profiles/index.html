@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Hồ sơ học sinh | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div>
+    <h1 class="h2 mb-1">Hồ sơ học sinh</h1>
+    <p class="text-secondary mb-0">Cập nhật lý lịch, phụ huynh, trạng thái học tập và diện chính sách.</p>
+  </div>
+</section>
+
+<form class="filter-bar mb-3" method="get">
+  <input class="form-control" name="q" value="{{ search }}" placeholder="Tìm mã hoặc họ tên">
+  <select class="form-select" name="status">
+    <option value="">Tất cả trạng thái</option>
+    {% for status in statuses %}
+      <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="policy_type">
+    <option value="">Tất cả diện chính sách</option>
+    {% for policy in policies %}
+      <option value="{{ policy }}" {% if selected_policy == policy %}selected{% endif %}>{{ policy }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-outline-primary" type="submit">Lọc</button>
+</form>
+
+<div class="table-responsive bg-white border rounded-2">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Mã HS</th><th>Họ tên</th><th>Lớp</th><th>Phụ huynh</th><th>Trạng thái</th><th>Diện chính sách</th><th class="text-end">Thao tác</th></tr></thead>
+    <tbody>
+      {% for student in profiles %}
+        <tr>
+          <td>{{ student.code }}</td>
+          <td>{{ student.full_name }}</td>
+          <td>{{ student.school_class.name if student.school_class else "" }}</td>
+          <td>{{ student.parent_name or "" }}<br><span class="text-secondary">{{ student.parent_phone or "" }}</span></td>
+          <td>{{ student.learning_status }}</td>
+          <td>{{ student.policy_type or "" }}</td>
+          <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('profiles.edit', student_id=student.id) }}">Cập nhật</a></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-center text-secondary py-4">Chưa có hồ sơ học sinh.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
