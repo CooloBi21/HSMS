@@ -38,7 +38,7 @@ class DashboardView(ctk.CTkScrollableFrame):
 
         ctk.CTkLabel(
             header,
-            text="Theo doi nhanh tinh hinh hoc sinh, lop hoc, giao vien va hieu suat hoc tap.",
+            text="Theo dõi nhanh tình hình học sinh, lớp học, giáo viên và hiệu suất học tập.",
             font=ctk.CTkFont(size=12),
             text_color=TEXT_MUTED,
         ).pack(anchor="w", pady=(6, 0))
@@ -158,19 +158,19 @@ class DashboardView(ctk.CTkScrollableFrame):
         for w in self._notif_frame.winfo_children():
             w.destroy()
         styles = {
-            "critical": ("Nghiem trong", DANGER, "#fee2e2"),
-            "warning": ("Can kiem tra", WARNING, "#fef3c7"),
-            "info": ("Thong tin", PRIMARY, "#dbeafe"),
-            "success": ("On dinh", SUCCESS, "#d1fae5"),
+            "critical": ("Nghiêm trọng", DANGER, "#fee2e2"),
+            "warning": ("Cần kiểm tra", WARNING, "#fef3c7"),
+            "info": ("Thông tin", PRIMARY, "#dbeafe"),
+            "success": ("Ổn định", SUCCESS, "#d1fae5"),
         }
         for item in items:
             if isinstance(item, dict):
                 level = item.get("level", "info")
-                title = item.get("title", "Thong tin")
+                title = item.get("title", "Thông tin")
                 detail = item.get("detail", "")
             else:
                 level = "info"
-                title = "Thong tin"
+                title = "Thông tin"
                 detail = str(item)
             label, color, soft = styles.get(level, styles["info"])
             row = ctk.CTkFrame(self._notif_frame, fg_color=(soft, "#172554"), corner_radius=12)

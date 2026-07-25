@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from dao.data_layer import DataLayer
-from models.giao_vien import GiaoVienInfo
+from models.teacher import GiaoVienInfo
 
 
 def _row_to_info(row) -> GiaoVienInfo:

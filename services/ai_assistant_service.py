@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from dao import giao_vien_dao, hoc_sinh_dao, lop_dao
+from dao import teacher_dao, student_dao, school_class_dao
 from utils.labels import teacher_status_vi
 
 
@@ -20,11 +20,11 @@ def answer_question(question: str) -> str:
         return _answer_best_class()
 
     if _match(q, ["bao nhiêu học sinh", "tổng học sinh", "số học sinh"]):
-        students = hoc_sinh_dao.get_all()
+        students = student_dao.get_all()
         return f"Hiện có {len(students)} học sinh trong hệ thống."
 
     if _match(q, ["bao nhiêu giáo viên", "tổng giáo viên"]):
-        teachers = giao_vien_dao.get_all()
+        teachers = teacher_dao.get_all()
         active = sum(1 for t in teachers if t.status == "Active")
         inactive = len(teachers) - active
         return (
@@ -48,7 +48,7 @@ def _match(q: str, keywords: list) -> bool:
 
 
 def _answer_inactive_teachers() -> str:
-    teachers = [t for t in giao_vien_dao.get_all() if t.status == "Inactive"]
+    teachers = [t for t in teacher_dao.get_all() if t.status == "Inactive"]
     if not teachers:
         return "Hiện không có giáo viên nào ở trạng thái tạm nghỉ / ngừng giảng dạy."
 
@@ -63,7 +63,7 @@ def _answer_inactive_teachers() -> str:
 
 
 def _answer_low_score_students() -> str:
-    students = [s for s in hoc_sinh_dao.get_all() if s.diem_tb is not None and s.diem_tb < 5]
+    students = [s for s in student_dao.get_all() if s.diem_tb is not None and s.diem_tb < 5]
     if not students:
         return "Không có học sinh nào có điểm trung bình dưới 5."
 
@@ -74,8 +74,8 @@ def _answer_low_score_students() -> str:
 
 
 def _answer_best_class() -> str:
-    classes = lop_dao.get_all()
-    students = hoc_sinh_dao.get_all()
+    classes = school_class_dao.get_all()
+    students = student_dao.get_all()
     best_name = ""
     best_avg = -1.0
 

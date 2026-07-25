@@ -1,8 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-from models.hoc_sinh import HocSinhInfo
-from services import hoc_sinh_service, lop_service
+from models.student import HocSinhInfo
+from services import student_service, school_class_service
 from ui.components.data_table import DataTable
 from ui.components.form_buttons import build_form_actions
 from ui.components.metric_card import MetricCard
@@ -103,10 +103,8 @@ class StudentsView(ctk.CTkFrame):
             columns=[
                 ("ma_hs", "Mã HS", 80), ("ho_ten", "Họ tên", 150), ("gioi_tinh", "GT", 70),
                 ("ngay_sinh", "Ngày sinh", 100), ("diem_tb", "Điểm TB", 80), ("lop", "Lớp", 120),
-                ("actions", "Hành động", 110),
             ],
             on_select=self._on_row_select,
-            on_action=self._on_table_action,
         )
         self._table.pack(fill="both", expand=True, padx=10, pady=(0, 4))
         self._empty_label = ctk.CTkLabel(
@@ -144,7 +142,7 @@ class StudentsView(ctk.CTkFrame):
 
     def _fill_next_id(self) -> None:
         """Điền sẵn mã học sinh tiếp theo vào ô mã (chỉ đọc)."""
-        next_id = hoc_sinh_service.generate_next_id()
+        next_id = student_service.generate_next_id()
         self._ma_hs.configure(state="normal")
         self._ma_hs.delete(0, "end")
         self._ma_hs.insert(0, next_id)
@@ -164,7 +162,7 @@ class StudentsView(ctk.CTkFrame):
         self.refresh()
 
     def _load_class_options(self) -> None:
-        classes = lop_service.list_classes()
+        classes = school_class_service.list_classes()
         self._class_map = {f"{c.ten_lop} ({c.ma_lop})": c.ma_lop for c in classes}
         lop_values = list(self._class_map.keys())
         self._ma_lop.configure(values=lop_values)
@@ -176,7 +174,7 @@ class StudentsView(ctk.CTkFrame):
         return self._class_map.get(self._ma_lop.get())
 
     def _gender_to_int(self, text: str) -> int | None:
-        return 1 if text == "Nam" else 0 if text == "Nữ" else None
+        return 1 if text == "Nam" else 0 if text in ("Nữ", "Nu") else None
 
     def _form_to_model(self) -> HocSinhInfo:
         diem = self._diem_tb.get().strip()
@@ -237,8 +235,8 @@ class StudentsView(ctk.CTkFrame):
     def _on_new_clicked(self) -> None:
         if self._pending_new:
             messagebox.showwarning(
-                "Dang them moi",
-                "Ban dang them moi hoc sinh. Vui long luu hoac chon mot hoc sinh khac truoc khi them moi tiep.",
+                "Đang thêm mới",
+                "Ban Đang thêm mới học sinh. Vui lòng lưu hoặc chọn một học sinh khác trước khi thêm mới tiếp.",
             )
             return
 
@@ -262,7 +260,7 @@ class StudentsView(ctk.CTkFrame):
         self._save_btn.configure(text="Lưu học sinh")
 
     def _on_row_select(self, values: tuple) -> None:
-        hs = hoc_sinh_service.get_student(values[0])
+        hs = student_service.get_student(values[0])
         if hs:
             self._fill_form(hs)
 
@@ -271,7 +269,7 @@ class StudentsView(ctk.CTkFrame):
             return
         ma_hs = values[0]
         if action == "edit":
-            hs = hoc_sinh_service.get_student(ma_hs)
+            hs = student_service.get_student(ma_hs)
             if hs:
                 self._fill_form(hs)
             return
@@ -283,10 +281,10 @@ class StudentsView(ctk.CTkFrame):
             hs = self._form_to_model()
             if self._editing_id:
                 hs.ma_hs = self._editing_id
-                hoc_sinh_service.update_student(hs)
+                student_service.update_student(hs)
                 messagebox.showinfo("Thành công", "Đã cập nhật học sinh.")
             else:
-                hoc_sinh_service.create_student(hs)
+                student_service.create_student(hs)
                 messagebox.showinfo("Thành công", "Đã thêm học sinh mới.")
             self._pending_new = False
             self._editing_id = None
@@ -306,12 +304,12 @@ class StudentsView(ctk.CTkFrame):
         self._delete_student_by_id(self._editing_id)
 
     def _delete_student_by_id(self, ma_hs: str) -> None:
-        hs = hoc_sinh_service.get_student(ma_hs)
+        hs = student_service.get_student(ma_hs)
         name = hs.ho_ten if hs else ma_hs
         if not messagebox.askyesno("Xác nhận", f"Xóa học sinh {name}?"):
             return
         try:
-            hoc_sinh_service.delete_student(ma_hs)
+            student_service.delete_student(ma_hs)
             messagebox.showinfo("Thành công", "Đã xóa học sinh.")
             self._pending_new = False
             self._editing_id = None
@@ -330,7 +328,7 @@ class StudentsView(ctk.CTkFrame):
     def _format_gender(self, gender_text: str) -> str:
         if gender_text == "Nam":
             return "[Nam]"
-        if gender_text == "Nữ":
+        if gender_text in ("Nữ", "Nu"):
             return "[Nữ]"
         return "[Khác]"
 
@@ -366,13 +364,13 @@ class StudentsView(ctk.CTkFrame):
 
     def refresh(self) -> None:
         self._load_class_options()
-        all_students = hoc_sinh_service.list_students()
+        all_students = student_service.list_students()
         self._update_kpis(all_students)
         search = self._search.get().strip() or None
         filter_label = self._filter_lop.get()
         ma_lop = None if filter_label == "Tất cả lớp" else self._class_map.get(filter_label)
-        students = hoc_sinh_service.list_students(ma_lop=ma_lop, search=search)
-        lop_names = {c.ma_lop: c.ten_lop for c in lop_service.list_classes()}
+        students = student_service.list_students(ma_lop=ma_lop, search=search)
+        lop_names = {c.ma_lop: c.ten_lop for c in school_class_service.list_classes()}
         self._all_rows = [
             (
                 s.ma_hs,

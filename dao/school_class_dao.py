@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from dao.data_layer import DataLayer
-from models.lop import LopInfo
+from models.school_class import LopInfo
 
 
 def _row_to_info(row) -> LopInfo:

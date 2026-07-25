@@ -3,39 +3,6 @@ from pathlib import Path
 from config import DATA_DIR, DB_SETTINGS, INIT_SQL
 from dao.db_provider import create_connection
 
-BTTH06_REQUIREMENTS = [
-    ("ADM01", "Tuyen sinh & Nhap hoc", "Tiep nhan ho so", "Nhap thong tin dang ky xet tuyen truc tuyen hoac truc tiep.", "Planned", "Admissions"),
-    ("ADM02", "Tuyen sinh & Nhap hoc", "Xet tuyen tu dong", "Sang loc va phe duyet danh sach trung tuyen theo tieu chi cai dat san.", "Planned", "Admissions"),
-    ("ADM03", "Tuyen sinh & Nhap hoc", "Cap ma so HSSV", "Tu dong tao ma dinh danh duy nhat cho hoc sinh, sinh vien moi.", "Implemented", "Students"),
-    ("ADM04", "Tuyen sinh & Nhap hoc", "Phan lop/phan nganh", "Xep HSSV vao lop sinh hoat, khoi nganh hoac chuyen nganh cu the.", "Partial", "Classes"),
-    ("PRO01", "Ho so & Thong tin ca nhan", "Cap nhat ly lich", "Luu tru thong tin ca nhan, ho khau, lien lac phu huynh.", "Partial", "Students"),
-    ("PRO02", "Ho so & Thong tin ca nhan", "Quan ly trang thai", "Theo doi Dang hoc, Bao luu, Thoi hoc, Tot nghiep.", "Planned", "Students"),
-    ("PRO03", "Ho so & Thong tin ca nhan", "Khen thuong/Ky luat", "Ghi nhan quyet dinh tuyen duong hoac xu ly vi pham.", "Planned", "Student affairs"),
-    ("PRO04", "Ho so & Thong tin ca nhan", "Dien chinh sach", "Phan loai mien giam hoc phi, ho ngheo, vung sau vung xa.", "Planned", "Student affairs"),
-    ("TRN01", "Dao tao & Xep lich", "Khung chuong trinh", "Thiet ke tien trinh hoc tap, mon tien quyet theo khoa.", "Planned", "Training"),
-    ("TRN02", "Dao tao & Xep lich", "Dang ky hoc phan", "Sinh vien chon mon hoc, lop hoc va giang vien.", "Planned", "Training"),
-    ("TRN03", "Dao tao & Xep lich", "Xep thoi khoa bieu", "Sap xep lich hoc, phong hoc de tranh trung lich.", "Planned", "Scheduling"),
-    ("TRN04", "Dao tao & Xep lich", "Diem danh & Chuyen can", "Ghi nhan nghi hoc, di muon hang ngay.", "Planned", "Attendance"),
-    ("EXM01", "Khao thi & Diem so", "Lap lich thi", "Chia ca thi, xep phong thi va so bao danh.", "Planned", "Exams"),
-    ("EXM02", "Khao thi & Diem so", "Nhap & Quan ly diem", "Cap nhat diem thanh phan, giua ky va cuoi ky.", "Partial", "Students"),
-    ("EXM03", "Khao thi & Diem so", "Tinh diem trung binh", "Quy doi va tinh GPA theo thang 4 hoac 10.", "Partial", "Dashboard"),
-    ("EXM04", "Khao thi & Diem so", "Xet dieu kien thi", "Khoa quyen du thi neu khong du chuyen can hoac hoc phi.", "Planned", "Exams"),
-    ("EXM05", "Khao thi & Diem so", "Phuc khao", "Tiep nhan yeu cau phuc khao va cap nhat diem.", "Planned", "Exams"),
-    ("FIN01", "Tai chinh & Hoc phi", "Tinh toan hoc phi", "Lap hoa don dua tren tin chi hoac muc thu co dinh.", "Planned", "Finance"),
-    ("FIN02", "Tai chinh & Hoc phi", "Thu phi truc tuyen", "Tich hop cong thanh toan ngan hang, vi dien tu.", "Planned", "Finance"),
-    ("FIN03", "Tai chinh & Hoc phi", "Quan ly cong no", "Theo doi HSSV chua hoan thanh nghia vu tai chinh.", "Planned", "Finance"),
-    ("FIN04", "Tai chinh & Hoc phi", "Xet duyet hoc bong", "Quet diem so va ren luyen de cap hoc bong.", "Planned", "Scholarship"),
-    ("STU01", "Cong tac sinh vien & Ngoai khoa", "Diem ren luyen", "Cham diem y thuc, dao duc theo ky.", "Planned", "Student affairs"),
-    ("STU02", "Cong tac sinh vien & Ngoai khoa", "Ky tuc xa", "Sap xep phong o, quan ly dien nuoc va luu tru.", "Planned", "Dormitory"),
-    ("STU03", "Cong tac sinh vien & Ngoai khoa", "Hoat dong ngoai khoa", "Ghi nhan tham gia CLB, chien dich tinh nguyen.", "Planned", "Activities"),
-    ("STU04", "Cong tac sinh vien & Ngoai khoa", "Y te hoc duong", "Luu lich su kham suc khoe va bao hiem y te.", "Planned", "Health"),
-    ("GRD01", "Tot nghiep & Bao cao", "Xet dieu kien tot nghiep", "Kiem tra chung chi dau ra va tich luy tin chi.", "Planned", "Graduation"),
-    ("GRD02", "Tot nghiep & Bao cao", "Cap phat van bang", "Quan ly so goc, so hieu bang va phoi bang.", "Planned", "Graduation"),
-    ("GRD03", "Tot nghiep & Bao cao", "Xuat bang diem/Giay chung nhan", "In bang diem toan khoa va giay xac nhan HSSV.", "Planned", "Reports"),
-    ("GRD04", "Tot nghiep & Bao cao", "Bao cao thong ke", "Thong ke EMIS, hoc luc, thoi hoc.", "Partial", "Dashboard"),
-    ("GRD05", "Tot nghiep & Bao cao", "Viec lam cuu sinh vien", "Khao sat tinh trang viec lam sau khi ra truong.", "Planned", "Alumni"),
-]
-
 
 def _ensure_data_dir() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -98,46 +65,418 @@ def _ensure_migrations() -> None:
             )
         """)
         conn.commit()
-        _ensure_btth06_schema(conn)
-        _seed_btth06_requirements(conn)
+        _remove_btth06_aggregate_schema(conn)
+        _ensure_admission_schema(conn)
+        _ensure_student_profile_schema(conn)
+        _ensure_training_schema(conn)
+        _ensure_exam_schema(conn)
+        _ensure_finance_schema(conn)
+        _ensure_student_affairs_schema(conn)
+        _ensure_graduation_schema(conn)
+        _ensure_account_schema(conn)
 
 
-def _ensure_btth06_schema(conn) -> None:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS BTTH06_REQUIREMENT (
-            Code TEXT PRIMARY KEY,
-            GroupName TEXT NOT NULL,
-            Title TEXT NOT NULL,
-            Description TEXT,
-            Status TEXT NOT NULL,
-            ModuleHint TEXT
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS BTTH06_RECORD (
-            RecordID TEXT PRIMARY KEY,
-            RequirementCode TEXT NOT NULL,
-            StudentCode TEXT,
-            Title TEXT NOT NULL,
-            Status TEXT NOT NULL,
-            EventDate TEXT,
-            NumericValue REAL,
-            Amount REAL,
-            Notes TEXT,
-            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
-            FOREIGN KEY (RequirementCode) REFERENCES BTTH06_REQUIREMENT(Code) ON DELETE CASCADE
-        )
-    """)
-    conn.execute("CREATE INDEX IF NOT EXISTS IDX_BTTH06_RECORD_REQ ON BTTH06_RECORD(RequirementCode)")
-    conn.execute("CREATE INDEX IF NOT EXISTS IDX_BTTH06_RECORD_STATUS ON BTTH06_RECORD(Status)")
+def _remove_btth06_aggregate_schema(conn) -> None:
+    conn.execute("DROP TABLE IF EXISTS BTTH06_RECORD")
+    conn.execute("DROP TABLE IF EXISTS BTTH06_REQUIREMENT")
     conn.commit()
 
 
-def _seed_btth06_requirements(conn) -> None:
-    conn.executemany(
-        """INSERT OR IGNORE INTO BTTH06_REQUIREMENT
-           (Code, GroupName, Title, Description, Status, ModuleHint)
-           VALUES (?, ?, ?, ?, ?, ?)""",
-        BTTH06_REQUIREMENTS,
-    )
+def _ensure_admission_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS ADMISSION_APPLICATION (
+            ApplicationID TEXT PRIMARY KEY,
+            FullName TEXT NOT NULL,
+            Gender INTEGER,
+            DOB TEXT,
+            Address TEXT,
+            Phone TEXT,
+            ParentName TEXT,
+            ParentPhone TEXT,
+            AdmissionScore REAL,
+            DesiredClass TEXT,
+            DesiredMajor TEXT,
+            Status TEXT NOT NULL,
+            StudentCode TEXT,
+            Notes TEXT,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            UpdatedAt TEXT,
+            FOREIGN KEY (DesiredClass) REFERENCES LOP(MaLop) ON DELETE SET NULL,
+            FOREIGN KEY (StudentCode) REFERENCES HOCSINH(MaHS) ON DELETE SET NULL
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ADMISSION_STATUS ON ADMISSION_APPLICATION(Status)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ADMISSION_CLASS ON ADMISSION_APPLICATION(DesiredClass)")
+    conn.commit()
+
+
+def _ensure_student_profile_schema(conn) -> None:
+    existing_columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(HOCSINH)").fetchall()
+    }
+    columns = {
+        "HoKhau": "TEXT",
+        "ParentName": "TEXT",
+        "ParentPhone": "TEXT",
+        "LearningStatus": "TEXT DEFAULT 'Đang học'",
+        "PolicyType": "TEXT",
+    }
+    for column_name, column_type in columns.items():
+        if column_name not in existing_columns:
+            conn.execute(f"ALTER TABLE HOCSINH ADD COLUMN {column_name} {column_type}")
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS STUDENT_DECISION (
+            DecisionID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            DecisionType TEXT NOT NULL,
+            DecisionDate TEXT NOT NULL,
+            Title TEXT NOT NULL,
+            Description TEXT,
+            Issuer TEXT,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_STUDENT_DECISION_MAHS ON STUDENT_DECISION(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_STUDENT_DECISION_TYPE ON STUDENT_DECISION(DecisionType)")
+    conn.commit()
+
+
+def _ensure_training_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS COURSE (
+            CourseID TEXT PRIMARY KEY,
+            CourseName TEXT NOT NULL,
+            Credits INTEGER NOT NULL,
+            GradeLevel TEXT,
+            PrerequisiteID TEXT,
+            Description TEXT,
+            FOREIGN KEY (PrerequisiteID) REFERENCES COURSE(CourseID) ON DELETE SET NULL
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS CURRICULUM_ITEM (
+            ItemID TEXT PRIMARY KEY,
+            CourseID TEXT NOT NULL,
+            GradeLevel TEXT NOT NULL,
+            Semester TEXT NOT NULL,
+            SequenceNo INTEGER,
+            Notes TEXT,
+            FOREIGN KEY (CourseID) REFERENCES COURSE(CourseID) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS COURSE_SECTION (
+            SectionID TEXT PRIMARY KEY,
+            CourseID TEXT NOT NULL,
+            ClassCode TEXT,
+            TeacherID TEXT,
+            Capacity INTEGER,
+            Status TEXT NOT NULL,
+            FOREIGN KEY (CourseID) REFERENCES COURSE(CourseID) ON DELETE CASCADE,
+            FOREIGN KEY (ClassCode) REFERENCES LOP(MaLop) ON DELETE SET NULL,
+            FOREIGN KEY (TeacherID) REFERENCES GIAOVIEN(TeacherID) ON DELETE SET NULL
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS COURSE_REGISTRATION (
+            RegistrationID TEXT PRIMARY KEY,
+            SectionID TEXT NOT NULL,
+            MaHS TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            RegisteredAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (SectionID) REFERENCES COURSE_SECTION(SectionID) ON DELETE CASCADE,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS CLASS_SCHEDULE (
+            ScheduleID TEXT PRIMARY KEY,
+            SectionID TEXT NOT NULL,
+            Weekday TEXT NOT NULL,
+            StartPeriod INTEGER NOT NULL,
+            EndPeriod INTEGER NOT NULL,
+            Room TEXT NOT NULL,
+            FOREIGN KEY (SectionID) REFERENCES COURSE_SECTION(SectionID) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS ATTENDANCE_RECORD (
+            AttendanceID TEXT PRIMARY KEY,
+            SectionID TEXT NOT NULL,
+            MaHS TEXT NOT NULL,
+            AttendanceDate TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (SectionID) REFERENCES COURSE_SECTION(SectionID) ON DELETE CASCADE,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UQ_COURSE_REGISTRATION ON COURSE_REGISTRATION(SectionID, MaHS)")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UQ_ATTENDANCE_RECORD ON ATTENDANCE_RECORD(SectionID, MaHS, AttendanceDate)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_SECTION_COURSE ON COURSE_SECTION(CourseID)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_SCHEDULE_SECTION ON CLASS_SCHEDULE(SectionID)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ATTENDANCE_SECTION ON ATTENDANCE_RECORD(SectionID)")
+    conn.commit()
+
+
+def _ensure_exam_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS EXAM_SCHEDULE (
+            ExamID TEXT PRIMARY KEY,
+            SectionID TEXT NOT NULL,
+            ExamDate TEXT NOT NULL,
+            Shift TEXT NOT NULL,
+            Room TEXT NOT NULL,
+            ExamType TEXT NOT NULL,
+            FOREIGN KEY (SectionID) REFERENCES COURSE_SECTION(SectionID) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS EXAM_ELIGIBILITY (
+            EligibilityID TEXT PRIMARY KEY,
+            ExamID TEXT NOT NULL,
+            MaHS TEXT NOT NULL,
+            CandidateNo TEXT,
+            AttendanceEligible INTEGER NOT NULL DEFAULT 1,
+            TuitionEligible INTEGER NOT NULL DEFAULT 1,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (ExamID) REFERENCES EXAM_SCHEDULE(ExamID) ON DELETE CASCADE,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS GRADE_RECORD (
+            GradeID TEXT PRIMARY KEY,
+            SectionID TEXT NOT NULL,
+            MaHS TEXT NOT NULL,
+            ComponentScore REAL,
+            MidtermScore REAL,
+            FinalScore REAL,
+            Average10 REAL,
+            GPA4 REAL,
+            LetterGrade TEXT,
+            UpdatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (SectionID) REFERENCES COURSE_SECTION(SectionID) ON DELETE CASCADE,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS GRADE_REVIEW (
+            ReviewID TEXT PRIMARY KEY,
+            GradeID TEXT NOT NULL,
+            RequestDate TEXT NOT NULL,
+            Reason TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            AdjustedScore REAL,
+            ResolutionNotes TEXT,
+            FOREIGN KEY (GradeID) REFERENCES GRADE_RECORD(GradeID) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UQ_EXAM_ELIGIBILITY ON EXAM_ELIGIBILITY(ExamID, MaHS)")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UQ_GRADE_RECORD ON GRADE_RECORD(SectionID, MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_EXAM_SECTION ON EXAM_SCHEDULE(SectionID)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_GRADE_SECTION ON GRADE_RECORD(SectionID)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_REVIEW_STATUS ON GRADE_REVIEW(Status)")
+    conn.commit()
+
+
+def _ensure_finance_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS TUITION_INVOICE (
+            InvoiceID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            Term TEXT NOT NULL,
+            InvoiceType TEXT NOT NULL,
+            CreditCount INTEGER,
+            UnitPrice REAL,
+            FixedAmount REAL,
+            TotalAmount REAL NOT NULL,
+            PaidAmount REAL NOT NULL DEFAULT 0,
+            Status TEXT NOT NULL,
+            DueDate TEXT,
+            Notes TEXT,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS PAYMENT_RECORD (
+            PaymentID TEXT PRIMARY KEY,
+            InvoiceID TEXT NOT NULL,
+            PaymentDate TEXT NOT NULL,
+            Amount REAL NOT NULL,
+            Method TEXT NOT NULL,
+            TransactionRef TEXT,
+            Notes TEXT,
+            FOREIGN KEY (InvoiceID) REFERENCES TUITION_INVOICE(InvoiceID) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS SCHOLARSHIP_REVIEW (
+            ScholarshipID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            Term TEXT NOT NULL,
+            GPA4 REAL,
+            Average10 REAL,
+            ConductScore REAL,
+            Amount REAL,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_TUITION_MAHS ON TUITION_INVOICE(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_TUITION_STATUS ON TUITION_INVOICE(Status)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_PAYMENT_INVOICE ON PAYMENT_RECORD(InvoiceID)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_SCHOLARSHIP_STATUS ON SCHOLARSHIP_REVIEW(Status)")
+    conn.commit()
+
+
+def _ensure_student_affairs_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS CONDUCT_SCORE (
+            ConductID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            Term TEXT NOT NULL,
+            AwarenessScore REAL,
+            DisciplineScore REAL,
+            ActivityScore REAL,
+            TotalScore REAL NOT NULL,
+            Rating TEXT NOT NULL,
+            Notes TEXT,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS DORM_ASSIGNMENT (
+            DormID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            Building TEXT NOT NULL,
+            Room TEXT NOT NULL,
+            Bed TEXT,
+            StartDate TEXT NOT NULL,
+            EndDate TEXT,
+            ElectricWaterFee REAL DEFAULT 0,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS EXTRACURRICULAR_ACTIVITY (
+            ActivityID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            ActivityName TEXT NOT NULL,
+            ActivityType TEXT NOT NULL,
+            JoinDate TEXT NOT NULL,
+            Role TEXT,
+            Hours REAL DEFAULT 0,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS HEALTH_RECORD (
+            HealthID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            CheckupDate TEXT NOT NULL,
+            HeightCm REAL,
+            WeightKg REAL,
+            HealthStatus TEXT NOT NULL,
+            InsuranceNo TEXT,
+            InsuranceExpiry TEXT,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_CONDUCT_MAHS ON CONDUCT_SCORE(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_DORM_STATUS ON DORM_ASSIGNMENT(Status)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ACTIVITY_MAHS ON EXTRACURRICULAR_ACTIVITY(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_HEALTH_MAHS ON HEALTH_RECORD(MaHS)")
+    conn.commit()
+
+
+def _ensure_graduation_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS GRADUATION_CHECK (
+            CheckID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            CheckDate TEXT NOT NULL,
+            RequiredCredits INTEGER NOT NULL,
+            EarnedCredits INTEGER NOT NULL,
+            InformaticsCert INTEGER NOT NULL DEFAULT 0,
+            LanguageCert INTEGER NOT NULL DEFAULT 0,
+            DefenseCert INTEGER NOT NULL DEFAULT 0,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS DIPLOMA_RECORD (
+            DiplomaID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            GraduationCheckID TEXT,
+            RegistryNo TEXT NOT NULL,
+            DiplomaNo TEXT NOT NULL,
+            IssueDate TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE,
+            FOREIGN KEY (GraduationCheckID) REFERENCES GRADUATION_CHECK(CheckID) ON DELETE SET NULL
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS DOCUMENT_REQUEST (
+            RequestID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            DocumentType TEXT NOT NULL,
+            RequestDate TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            OutputPath TEXT,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS ALUMNI_EMPLOYMENT (
+            AlumniID TEXT PRIMARY KEY,
+            MaHS TEXT NOT NULL,
+            SurveyDate TEXT NOT NULL,
+            EmploymentStatus TEXT NOT NULL,
+            Company TEXT,
+            Position TEXT,
+            Salary REAL,
+            Notes TEXT,
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_GRAD_CHECK_MAHS ON GRADUATION_CHECK(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_DIPLOMA_MAHS ON DIPLOMA_RECORD(MaHS)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_DOCUMENT_TYPE ON DOCUMENT_REQUEST(DocumentType)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ALUMNI_STATUS ON ALUMNI_EMPLOYMENT(EmploymentStatus)")
+    conn.commit()
+
+
+def _ensure_account_schema(conn) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS USER_ACCOUNT (
+            AccountID TEXT PRIMARY KEY,
+            MaHS TEXT,
+            Username TEXT NOT NULL UNIQUE,
+            PasswordHash TEXT NOT NULL,
+            Role TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            CreatedAt TEXT DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (MaHS) REFERENCES HOCSINH(MaHS) ON DELETE CASCADE
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ACCOUNT_ROLE ON USER_ACCOUNT(Role)")
+    conn.execute("CREATE INDEX IF NOT EXISTS IDX_ACCOUNT_STUDENT ON USER_ACCOUNT(MaHS)")
     conn.commit()

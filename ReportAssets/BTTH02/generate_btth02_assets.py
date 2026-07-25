@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS HOCSINH (
     FOREIGN KEY (MaLop) REFERENCES LOP(MaLop) ON DELETE SET NULL
 );"""
 
-    crud_code = """# dao/hoc_sinh_dao.py — Thao tác CRUD trên bảng HOCSINH
+    crud_code = """# dao/student_dao.py — Thao tác CRUD trên bảng HOCSINH
 
 def insert(hs: HocSinhInfo) -> None:
     with get_connection() as conn:
@@ -237,7 +237,7 @@ def delete(ma_hs: str) -> bool:
         conn.commit()
         return cur.rowcount > 0"""
 
-    combobox_code = """# dao/lop_dao.py — Đọc danh sách lớp từ CSDL
+    combobox_code = """# dao/school_class_dao.py — Đọc danh sách lớp từ CSDL
 def get_all() -> List[LopInfo]:
     with get_connection() as conn:
         rows = conn.execute(
@@ -247,7 +247,7 @@ def get_all() -> List[LopInfo]:
 
 # ui/views/students_view.py — Nạp ComboBox lớp trên Form nhập học sinh
 def _load_class_options(self) -> None:
-    classes = lop_service.list_classes()  # → gọi DAO đọc bảng LOP
+    classes = school_class_service.list_classes()  # → gọi DAO đọc bảng LOP
     self._class_map = {
         f"{c.ten_lop} ({c.ma_lop})": c.ma_lop for c in classes
     }
@@ -269,7 +269,7 @@ def _load_class_options(self) -> None:
             "BTTH02_03_dao_crud_hocsinh.png",
             "BTTH02 — Thêm, cập nhật, xóa học sinh",
             "Truy vấn tham số hóa INSERT / UPDATE / DELETE",
-            "dao/hoc_sinh_dao.py",
+            "dao/student_dao.py",
             crud_code,
             highlight_lines={3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 26, 27, 28, 29},
         ),
@@ -277,7 +277,7 @@ def _load_class_options(self) -> None:
             "BTTH02_04_load_combobox_lop.png",
             "BTTH02 — Load danh sách lớp vào ComboBox",
             "Form Load: đọc LOP → hiển thị trên ComboBox chọn lớp",
-            "students_view.py + lop_dao.py",
+            "students_view.py + school_class_dao.py",
             combobox_code,
             highlight_lines={2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17},
         ),

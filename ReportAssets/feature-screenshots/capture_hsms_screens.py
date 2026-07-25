@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dao.db import init_database_if_needed
-from services import giao_vien_service, hoc_sinh_service, lop_service
+from services import teacher_service, student_service, school_class_service
 from ui.app import HSMSApp
 
 
@@ -75,7 +75,7 @@ def main() -> None:
         "Hình 3. Thao tác bấm '+ Thêm học sinh': mã học sinh được tự sinh và form sẵn sàng nhập dữ liệu mới.",
     )
 
-    students = hoc_sinh_service.list_students()
+    students = student_service.list_students()
     if students:
         students_view._fill_form(students[0])
         screenshot(
@@ -120,7 +120,7 @@ def main() -> None:
     classes_view._filter_khoi.set("Tất cả khối")
     classes_view._on_filter_change()
 
-    classes = lop_service.list_classes()
+    classes = school_class_service.list_classes()
     if classes:
         classes_view._fill_form(classes[0])
         screenshot(
@@ -155,7 +155,7 @@ def main() -> None:
     teachers_view._status_filter.set("Tất cả trạng thái")
     teachers_view._on_filter_change()
 
-    teachers = giao_vien_service.list_teachers()
+    teachers = teacher_service.list_teachers()
     if teachers:
         teachers_view._fill_form(teachers[0])
         screenshot(

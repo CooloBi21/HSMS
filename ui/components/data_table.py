@@ -19,10 +19,11 @@ class DataTable(ctk.CTkFrame):
         **kwargs,
     ):
         super().__init__(master, corner_radius=14, border_width=1, border_color=BORDER_LIGHT, **kwargs)
-        self._columns = columns
+        self._action_column = action_column
+        self._action_column_indices = [index for index, column in enumerate(columns) if column[0] == action_column]
+        self._columns = [column for column in columns if column[0] != action_column]
         self._on_select = on_select
         self._on_action = on_action
-        self._action_column = action_column
         self._action_names = action_names or ("edit", "delete")
         self._tree: Optional[ttk.Treeview] = None
         self._build()
@@ -128,7 +129,8 @@ class DataTable(ctk.CTkFrame):
             dark = ctk.get_appearance_mode().lower() == "dark"
             for index, row in enumerate(rows):
                 tags = ("even",) if index % 2 == 0 else ("odd",)
-                self._tree.insert("", "end", values=row, tags=tags)
+                values = tuple(value for value_index, value in enumerate(row) if value_index not in self._action_column_indices)
+                self._tree.insert("", "end", values=values, tags=tags)
             self._tree.tag_configure("even", background="#1e293b" if dark else "#ffffff")
             self._tree.tag_configure("odd", background="#0f172a" if dark else "#f8fafc")
 

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from dao.data_layer import DataLayer
-from models.hoc_sinh import HocSinhInfo
+from models.student import HocSinhInfo
 
 
 def _row_to_info(row) -> HocSinhInfo:
@@ -13,6 +13,11 @@ def _row_to_info(row) -> HocSinhInfo:
         dia_chi=row["DiaChi"],
         diem_tb=row["DiemTB"],
         ma_lop=row["MaLop"],
+        ho_khau=row.get("HoKhau"),
+        parent_name=row.get("ParentName"),
+        parent_phone=row.get("ParentPhone"),
+        learning_status=row.get("LearningStatus") or "Đang học",
+        policy_type=row.get("PolicyType"),
     )
 
 
@@ -40,9 +45,24 @@ def get_by_id(ma_hs: str) -> Optional[HocSinhInfo]:
 
 def insert(hs: HocSinhInfo) -> None:
     DataLayer.execute_non_query(
-        """INSERT INTO HOCSINH (MaHS, HoTen, GioiTinh, NgaySinh, DiaChi, DiemTB, MaLop)
-           VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        (hs.ma_hs, hs.ho_ten, hs.gioi_tinh, hs.ngay_sinh, hs.dia_chi, hs.diem_tb, hs.ma_lop),
+        """INSERT INTO HOCSINH
+           (MaHS, HoTen, GioiTinh, NgaySinh, DiaChi, DiemTB, MaLop,
+            HoKhau, ParentName, ParentPhone, LearningStatus, PolicyType)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            hs.ma_hs,
+            hs.ho_ten,
+            hs.gioi_tinh,
+            hs.ngay_sinh,
+            hs.dia_chi,
+            hs.diem_tb,
+            hs.ma_lop,
+            hs.ho_khau,
+            hs.parent_name,
+            hs.parent_phone,
+            hs.learning_status,
+            hs.policy_type,
+        ),
     )
 
 
@@ -51,6 +71,29 @@ def update(hs: HocSinhInfo) -> bool:
         """UPDATE HOCSINH SET HoTen=?, GioiTinh=?, NgaySinh=?, DiaChi=?, DiemTB=?, MaLop=?
            WHERE MaHS=?""",
         (hs.ho_ten, hs.gioi_tinh, hs.ngay_sinh, hs.dia_chi, hs.diem_tb, hs.ma_lop, hs.ma_hs),
+    )
+    return rowcount > 0
+
+
+def update_profile(hs: HocSinhInfo) -> bool:
+    rowcount = DataLayer.execute_non_query(
+        """UPDATE HOCSINH
+           SET HoTen=?, GioiTinh=?, NgaySinh=?, DiaChi=?, MaLop=?,
+               HoKhau=?, ParentName=?, ParentPhone=?, LearningStatus=?, PolicyType=?
+           WHERE MaHS=?""",
+        (
+            hs.ho_ten,
+            hs.gioi_tinh,
+            hs.ngay_sinh,
+            hs.dia_chi,
+            hs.ma_lop,
+            hs.ho_khau,
+            hs.parent_name,
+            hs.parent_phone,
+            hs.learning_status,
+            hs.policy_type,
+            hs.ma_hs,
+        ),
     )
     return rowcount > 0
 

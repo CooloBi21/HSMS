@@ -1,0 +1,25 @@
+# BTTH06 Test Case Captions
+
+- `BTTH06_TC01_admission_application_received.png` - Hình 1. Tiếp nhận hồ sơ tuyển sinh BTTH06: form và bảng hiển thị hồ sơ mới đã được ghi nhận.
+- `BTTH06_TC02_admission_auto_screen_passed.png` - Hình 2. Xét tuyển tự động: hồ sơ BTTH06 đạt điểm chuẩn và chuyển sang trạng thái đạt.
+- `BTTH06_TC03_admission_enrolled_student_code.png` - Hình 3. Nhập học và cấp mã học sinh: hồ sơ tuyển sinh đã có mã học sinh mới và lớp dự kiến.
+- `BTTH06_TC04_profile_status_policy_update.png` - Hình 4. Cập nhật lý lịch học sinh: trạng thái học tập, thông tin phụ huynh và diện chính sách được quản lý trong Hồ sơ.
+- `BTTH06_TC05_profile_reward_decision.png` - Hình 5. Quản lý khen thưởng/kỷ luật: quyết định khen thưởng BTTH06 được gán cho học sinh.
+- `BTTH06_TC06_training_curriculum_course.png` - Hình 6. Quản lý khung chương trình: môn học và dòng khung chương trình BTTH06 được tạo.
+- `BTTH06_TC07_training_section_registration.png` - Hình 7. Đăng ký học phần: lớp học phần BTTH06 có học sinh đăng ký và sĩ số được cập nhật.
+- `BTTH06_TC08_training_schedule.png` - Hình 8. Xếp thời khóa biểu: lịch học BTTH06 gắn học phần, thứ, tiết và phòng học.
+- `BTTH06_TC09_training_attendance.png` - Hình 9. Điểm danh và chuyên cần: bản ghi vắng/đi muộn được lưu theo học sinh và học phần.
+- `BTTH06_TC10_exam_schedule_eligibility.png` - Hình 10. Lập lịch thi và xét điều kiện: lịch thi BTTH06 tạo danh sách số báo danh/đủ điều kiện.
+- `BTTH06_TC11_exam_grade_gpa.png` - Hình 11. Nhập điểm và tính GPA: điểm thành phần, giữa kỳ, cuối kỳ được quy đổi TB10/GPA4.
+- `BTTH06_TC12_exam_grade_review.png` - Hình 12. Quản lý phúc khảo: yêu cầu phúc khảo BTTH06 đã điều chỉnh điểm và lưu trạng thái xử lý.
+- `BTTH06_TC13_finance_invoice.png` - Hình 13. Tính học phí: hóa đơn BTTH06 tính theo tín chỉ và ghi tổng phải thu.
+- `BTTH06_TC14_finance_payment_debt.png` - Hình 14. Thu phí và công nợ: thanh toán một phần được ghi nhận, bảng công nợ hiển thị số tiền còn lại.
+- `BTTH06_TC15_finance_scholarship_scan.png` - Hình 15. Xét học bổng: hệ thống quét điểm/GPA và tạo danh sách đề xuất học bổng.
+- `BTTH06_TC16_affairs_conduct_score.png` - Hình 16. Đánh giá điểm rèn luyện: điểm thành phần được tổng hợp thành tổng điểm và xếp loại.
+- `BTTH06_TC17_affairs_dorm_assignment.png` - Hình 17. Quản lý ký túc xá: học sinh được sắp phòng, giường và phí điện nước.
+- `BTTH06_TC18_affairs_extracurricular.png` - Hình 18. Theo dõi ngoại khóa: hoạt động, vai trò, số giờ và trạng thái tham gia được ghi nhận.
+- `BTTH06_TC19_affairs_health_record.png` - Hình 19. Quản lý y tế học đường: lịch sử khám sức khỏe và thông tin BHYT được lưu.
+- `BTTH06_TC20_graduation_check.png` - Hình 20. Xét điều kiện tốt nghiệp: tín chỉ, chứng chỉ đầu ra và trạng thái đạt/chưa đạt được kiểm tra.
+- `BTTH06_TC21_graduation_diploma.png` - Hình 21. Cấp phát văn bằng: số gốc, số bằng, ngày cấp và trạng thái văn bằng được quản lý.
+- `BTTH06_TC22_graduation_document_emis.png` - Hình 22. Xuất bảng điểm/giấy chứng nhận và thống kê EMIS: yêu cầu biểu mẫu được tạo kèm đường dẫn.
+- `BTTH06_TC23_graduation_alumni_employment.png` - Hình 23. Quản lý việc làm cựu sinh viên: khảo sát việc làm, công ty, vị trí và thu nhập được lưu.

@@ -172,15 +172,15 @@ def save_tree_image() -> None:
         "    components/",
         "      data_table.py, metric_card.py, chart_panel.py",
         "  services/",
-        "    hoc_sinh_service.py",
-        "    lop_service.py",
-        "    giao_vien_service.py",
+        "    student_service.py",
+        "    school_class_service.py",
+        "    teacher_service.py",
         "    dashboard_service.py",
         "  dao/",
         "    db.py",
-        "    hoc_sinh_dao.py",
-        "    lop_dao.py",
-        "    giao_vien_dao.py",
+        "    student_dao.py",
+        "    school_class_dao.py",
+        "    teacher_dao.py",
         "  models/",
         "    hoc_sinh.py, lop.py, giao_vien.py",
         "  database/",
@@ -231,11 +231,11 @@ def main() -> None:
 
     schema_lines = extract_between("database/init_db.sql", "CREATE TABLE IF NOT EXISTS LOP", "CREATE TABLE IF NOT EXISTS GIAOVIEN", 42)
     dao_crud = (
-        extract_block("dao/hoc_sinh_dao.py", "def insert", 10)
+        extract_block("dao/student_dao.py", "def insert", 10)
         + [""]
-        + extract_block("dao/hoc_sinh_dao.py", "def update", 10)
+        + extract_block("dao/student_dao.py", "def update", 10)
         + [""]
-        + extract_block("dao/hoc_sinh_dao.py", "def delete", 7)
+        + extract_block("dao/student_dao.py", "def delete", 7)
     )
     hoc_sinh_model = read_lines("models/hoc_sinh.py")
     lop_model = read_lines("models/lop.py")
@@ -246,8 +246,8 @@ def main() -> None:
         + [""]
         + extract_block("ui/views/students_view.py", "def _save", 24)
     )
-    service_code = extract_between("services/hoc_sinh_service.py", "def _validate", "def list_students", 55)
-    dao_code = extract_block("dao/hoc_sinh_dao.py", "def insert", 24)
+    service_code = extract_between("services/student_service.py", "def _validate", "def list_students", 55)
+    dao_code = extract_block("dao/student_dao.py", "def insert", 24)
 
     save_code_image(
         "BTTH02_01_database_schema_hocsinh_lop.png",
@@ -260,7 +260,7 @@ def main() -> None:
         "BTTH02_02_student_dao_crud_sql.png",
         "BTTH02 - Cài đặt CRUD học sinh bằng SQL",
         "Minh chứng các thao tác thêm, sửa, xóa dữ liệu học sinh ở DAO.",
-        [("dao/hoc_sinh_dao.py - insert/update/delete", dao_crud, GREEN)],
+        [("dao/student_dao.py - insert/update/delete", dao_crud, GREEN)],
         GREEN,
     )
     save_flow_image(
@@ -317,7 +317,7 @@ def main() -> None:
         "BTTH04_03_service_dao_example.png",
         "BTTH04 - Service gọi DAO theo kiến trúc 3 lớp",
         "Minh chứng service xử lý nghiệp vụ còn DAO làm việc trực tiếp với database.",
-        [("services/hoc_sinh_service.py", service_code, GREEN), ("dao/hoc_sinh_dao.py", dao_code, AMBER)],
+        [("services/student_service.py", service_code, GREEN), ("dao/student_dao.py", dao_code, AMBER)],
         PURPLE,
     )
     write_captions()

@@ -270,9 +270,9 @@ def save_datalayer_image() -> None:
 
 def save_dao_refactor_image() -> None:
     filename = "BTTH05_05_dao_reuse_datalayer.png"
-    hs_start, hs_lines = extract_between("dao/hoc_sinh_dao.py", "def insert", "def count_by_class", 45)
-    lop_start, lop_lines = extract_between("dao/lop_dao.py", "def insert", "def get_max_ma_lop_num", 34)
-    gv_start, gv_lines = extract_between("dao/giao_vien_dao.py", "def insert", "def get_max_teacher_code_num", 45)
+    hs_start, hs_lines = extract_between("dao/student_dao.py", "def insert", "def count_by_class", 45)
+    lop_start, lop_lines = extract_between("dao/school_class_dao.py", "def insert", "def get_max_ma_lop_num", 34)
+    gv_start, gv_lines = extract_between("dao/teacher_dao.py", "def insert", "def get_max_teacher_code_num", 45)
     img = Image.new("RGB", (1600, 1280), BG)
     draw = ImageDraw.Draw(img)
     draw_header(
@@ -281,9 +281,9 @@ def save_dao_refactor_image() -> None:
         "Hoc sinh, lop va giao vien khong lap lai logic connection/commit; API cu van giu de service va UI khong doi.",
         AMBER,
     )
-    draw_code_panel(draw, (55, 185, 520, 1210), "hoc_sinh_dao.py", hs_lines, hs_start, BLUE)
-    draw_code_panel(draw, (565, 185, 1030, 1210), "lop_dao.py", lop_lines, lop_start, GREEN)
-    draw_code_panel(draw, (1075, 185, 1540, 1210), "giao_vien_dao.py", gv_lines, gv_start, AMBER)
+    draw_code_panel(draw, (55, 185, 520, 1210), "student_dao.py", hs_lines, hs_start, BLUE)
+    draw_code_panel(draw, (565, 185, 1030, 1210), "school_class_dao.py", lop_lines, lop_start, GREEN)
+    draw_code_panel(draw, (1075, 185, 1540, 1210), "teacher_dao.py", gv_lines, gv_start, AMBER)
     add_caption(
         filename,
         "Hinh 5. Cac DAO cu the da chuyen sang goi DataLayer cho insert, update, delete va query; service/UI van dung cac ham DAO cu nen khong lam thay doi nghiep vu hien co.",
@@ -295,12 +295,12 @@ def run_check() -> str:
     code = (
         "from dao.db import init_database_if_needed; "
         "init_database_if_needed(); "
-        "from services import hoc_sinh_service, lop_service, giao_vien_service, activity_service; "
+        "from services import student_service, school_class_service, teacher_service, activity_service; "
         "from dao.data_layer import DataLayer; "
         "print('BTTH05 runtime check'); "
-        "print('students', len(hoc_sinh_service.list_students())); "
-        "print('classes', len(lop_service.list_classes())); "
-        "print('teachers', len(giao_vien_service.list_teachers())); "
+        "print('students', len(student_service.list_students())); "
+        "print('classes', len(school_class_service.list_classes())); "
+        "print('teachers', len(teacher_service.list_teachers())); "
         "print('activities', activity_service.count_activities()); "
         "print('DataLayer HOCSINH count', DataLayer.scalar('SELECT COUNT(*) FROM HOCSINH'))"
     )

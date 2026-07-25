@@ -1,8 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-from models.giao_vien import GiaoVienInfo
-from services import giao_vien_service
+from models.teacher import GiaoVienInfo
+from services import teacher_service
 from ui.components.data_table import DataTable
 from ui.components.form_buttons import build_form_actions
 from ui.components.metric_card import MetricCard
@@ -118,11 +118,8 @@ class TeachersView(ctk.CTkFrame):
             columns=[
                 ("code", "Mã GV", 80), ("name", "Họ tên", 150), ("gender", "GT", 70),
                 ("subject", "Môn", 95), ("phone", "Điện thoại", 105), ("status", "Trạng thái", 130),
-                ("actions", "Hành động", 155),
             ],
             on_select=self._on_row_select,
-            on_action=self._on_table_action,
-            action_names=("edit", "detail", "delete"),
         )
         self._table.pack(fill="both", expand=True, padx=10, pady=(0, 4))
         self._empty_label = ctk.CTkLabel(
@@ -200,7 +197,7 @@ class TeachersView(ctk.CTkFrame):
         return teacher_code
 
     def _fill_next_code(self) -> None:
-        self._set_teacher_code(giao_vien_service.generate_next_code())
+        self._set_teacher_code(teacher_service.generate_next_code())
 
     def _clear_other_fields(self) -> None:
         for w in (self._full_name, self._dob, self._phone, self._email, self._address):
@@ -256,8 +253,8 @@ class TeachersView(ctk.CTkFrame):
     def _on_new_clicked(self) -> None:
         if self._pending_new:
             messagebox.showwarning(
-                "Dang them moi",
-                "Ban dang them moi giao vien. Vui long luu hoac chon mot giao vien khac truoc khi them moi tiep.",
+                "Đang thêm mới",
+                "Ban Đang thêm mới giáo viên. Vui lòng lưu hoặc chọn một giáo viên khác trước khi thêm mới tiếp.",
             )
             return
 
@@ -268,7 +265,7 @@ class TeachersView(ctk.CTkFrame):
         self._save_btn.configure(text="Lưu giáo viên")
 
     def _on_row_select(self, values: tuple) -> None:
-        gv = giao_vien_service.get_teacher_by_code(values[0])
+        gv = teacher_service.get_teacher_by_code(values[0])
         if gv:
             self._fill_form(gv)
 
@@ -276,7 +273,7 @@ class TeachersView(ctk.CTkFrame):
         if not values:
             return
         teacher_code = values[0]
-        gv = giao_vien_service.get_teacher_by_code(teacher_code)
+        gv = teacher_service.get_teacher_by_code(teacher_code)
         if not gv:
             return
         if action == "edit":
@@ -300,10 +297,10 @@ class TeachersView(ctk.CTkFrame):
             gv = self._form_to_model()
             if self._editing_id:
                 gv.teacher_id = self._editing_id
-                giao_vien_service.update_teacher(gv)
+                teacher_service.update_teacher(gv)
                 messagebox.showinfo("Thành công", "Đã cập nhật giáo viên.")
             else:
-                giao_vien_service.create_teacher(gv)
+                teacher_service.create_teacher(gv)
                 messagebox.showinfo("Thành công", "Đã thêm giáo viên mới.")
             self._pending_new = False
             self._notify()
@@ -320,12 +317,12 @@ class TeachersView(ctk.CTkFrame):
         return
 
     def _delete_teacher_by_id(self, teacher_id: str) -> None:
-        gv = giao_vien_service.get_teacher(teacher_id)
+        gv = teacher_service.get_teacher(teacher_id)
         name = gv.full_name if gv else teacher_id
         if not messagebox.askyesno("Xác nhận", f"Xóa giáo viên {name}?"):
             return
         try:
-            giao_vien_service.delete_teacher(teacher_id)
+            teacher_service.delete_teacher(teacher_id)
             messagebox.showinfo("Thành công", "Đã xóa giáo viên.")
             self._notify()
             self._reset()
@@ -349,8 +346,8 @@ class TeachersView(ctk.CTkFrame):
         search = self._search.get().strip() or None
         status_label = self._status_filter.get()
         status = None if status_label == "Tất cả trạng thái" else teacher_status_db(status_label)
-        teachers = giao_vien_service.list_teachers(search=search, status=status)
-        all_teachers = giao_vien_service.list_teachers()
+        teachers = teacher_service.list_teachers(search=search, status=status)
+        all_teachers = teacher_service.list_teachers()
         self._update_kpis(all_teachers)
         subject_filter = self._subject_filter.get()
         if subject_filter != "Tất cả môn":

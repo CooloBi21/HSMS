@@ -4,10 +4,18 @@ import customtkinter as ctk
 
 from ui.theme import outline_button_kwargs
 
-NAV_ORDER = ["dashboard", "students", "classes", "teachers"]
+NAV_ORDER = ["dashboard", "admissions", "students", "accounts", "profiles", "training", "exams", "finance", "affairs", "graduation", "classes", "teachers"]
 NAV_LABELS = {
-    "dashboard": "Dashboard",
+    "dashboard": "Tổng quan",
+    "admissions": "Tuyển sinh",
     "students": "Học sinh",
+    "accounts": "Tài khoản",
+    "profiles": "Hồ sơ",
+    "training": "Đào tạo",
+    "exams": "Khảo thí",
+    "finance": "Tài chính",
+    "affairs": "Công tác SV",
+    "graduation": "Tốt nghiệp",
     "classes": "Lớp học",
     "teachers": "Giáo viên",
 }
@@ -26,7 +34,7 @@ class ScreenNavBar(ctk.CTkFrame):
         if prev_key:
             ctk.CTkButton(
                 self,
-                text=f"◀ {NAV_LABELS[prev_key]}",
+                text=f"← {NAV_LABELS[prev_key]}",
                 height=34,
                 corner_radius=10,
                 command=lambda: on_navigate(prev_key),
@@ -43,7 +51,7 @@ class ScreenNavBar(ctk.CTkFrame):
         if next_key:
             ctk.CTkButton(
                 self,
-                text=f"{NAV_LABELS[next_key]} ▶",
+                text=f"{NAV_LABELS[next_key]} →",
                 height=34,
                 corner_radius=10,
                 command=lambda: on_navigate(next_key),

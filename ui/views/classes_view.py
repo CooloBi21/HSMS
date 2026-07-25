@@ -1,8 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-from models.lop import LopInfo
-from services import lop_service
+from models.school_class import LopInfo
+from services import school_class_service
 from ui.components.data_table import DataTable
 from ui.components.form_buttons import build_form_actions
 from ui.components.metric_card import MetricCard
@@ -105,11 +105,8 @@ class ClassesView(ctk.CTkFrame):
                 ("khoi", "Khối", 90),
                 ("count", "Số HS", 90),
                 ("status", "Trạng thái", 135),
-                ("actions", "Hành động", 150),
             ],
             on_select=self._on_row_select,
-            on_action=self._on_table_action,
-            action_names=("edit", "view", "delete"),
         )
         self._table.pack(fill="both", expand=True, padx=10, pady=(0, 4))
         self._empty_label = ctk.CTkLabel(
@@ -158,7 +155,7 @@ class ClassesView(ctk.CTkFrame):
         return ma_lop
 
     def _fill_next_id(self) -> None:
-        self._set_ma_lop(lop_service.generate_next_id())
+        self._set_ma_lop(school_class_service.generate_next_id())
 
     def _clear_other_fields(self) -> None:
         self._ten_lop.delete(0, "end")
@@ -204,8 +201,8 @@ class ClassesView(ctk.CTkFrame):
     def _on_new_clicked(self) -> None:
         if self._pending_new:
             messagebox.showwarning(
-                "Dang them moi",
-                "Ban dang them moi lop hoc. Vui long luu hoac chon mot lop khac truoc khi them moi tiep.",
+                "Đang thêm mới",
+                "Ban đang thêm mới lớp học. Vui lòng lưu hoặc chọn một lớp khác trước khi thêm mới tiếp.",
             )
             return
 
@@ -216,7 +213,7 @@ class ClassesView(ctk.CTkFrame):
         self._save_btn.configure(text="Lưu lớp học")
 
     def _on_row_select(self, values: tuple) -> None:
-        lop = lop_service.get_class(values[0])
+        lop = school_class_service.get_class(values[0])
         if lop:
             self._fill_form(lop)
 
@@ -225,7 +222,7 @@ class ClassesView(ctk.CTkFrame):
             return
         ma_lop = values[0]
         if action == "edit":
-            lop = lop_service.get_class(ma_lop)
+            lop = school_class_service.get_class(ma_lop)
             if lop:
                 self._fill_form(lop)
             return
@@ -244,10 +241,10 @@ class ClassesView(ctk.CTkFrame):
             lop = self._form_to_model()
             if self._editing_id:
                 lop.ma_lop = self._editing_id
-                lop_service.update_class(lop)
+                school_class_service.update_class(lop)
                 messagebox.showinfo("Thành công", "Đã cập nhật lớp.")
             else:
-                lop_service.create_class(lop)
+                school_class_service.create_class(lop)
                 messagebox.showinfo("Thành công", "Đã thêm lớp mới.")
             self._notify()
             self._reset()
@@ -263,7 +260,7 @@ class ClassesView(ctk.CTkFrame):
         if not messagebox.askyesno("Xác nhận", f"Xóa lớp {ma_lop}?"):
             return
         try:
-            lop_service.delete_class(ma_lop)
+            school_class_service.delete_class(ma_lop)
             messagebox.showinfo("Thành công", "Đã xóa lớp.")
             self._notify()
             self._reset()
@@ -276,7 +273,7 @@ class ClassesView(ctk.CTkFrame):
             self._on_data_changed()
 
     def _update_kpis(self, classes: list) -> None:
-        class_counts = [(c, lop_service.student_count(c.ma_lop)) for c in classes]
+        class_counts = [(c, school_class_service.student_count(c.ma_lop)) for c in classes]
         total_students = sum(count for _c, count in class_counts)
         empty_classes = len([1 for _c, count in class_counts if count == 0])
         largest = max(class_counts, key=lambda item: item[1], default=(None, 0))
@@ -296,7 +293,7 @@ class ClassesView(ctk.CTkFrame):
 
     def refresh(self) -> None:
         search = self._search.get().strip().lower()
-        classes = lop_service.list_classes()
+        classes = school_class_service.list_classes()
         self._update_kpis(classes)
         if search:
             classes = [c for c in classes if search in c.ma_lop.lower() or search in c.ten_lop.lower()]
@@ -306,13 +303,12 @@ class ClassesView(ctk.CTkFrame):
             classes = [c for c in classes if c.khoi == khoi_value]
         self._all_rows = []
         for c in classes:
-            count = lop_service.student_count(c.ma_lop)
+            count = school_class_service.student_count(c.ma_lop)
             self._all_rows.append((
                 c.ma_lop,
                 c.ten_lop,
                 self._format_khoi_badge(c.khoi),
                 f"{count} học sinh",
                 self._format_status(count),
-                "Sửa | Xem HS | Xóa",
             ))
         self._render_page()

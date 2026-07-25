@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from dao import giao_vien_dao, hoc_sinh_dao, lop_dao
+from dao import teacher_dao, student_dao, school_class_dao
 from models.activity import ActivityInfo
 from services import activity_service
 
@@ -43,9 +43,9 @@ def get_activity_count() -> int:
 
 
 def get_dashboard_stats(activity_page: int = 1, activity_page_size: int = 5) -> DashboardStats:
-    students = hoc_sinh_dao.get_all()
-    classes = lop_dao.get_all()
-    teachers = giao_vien_dao.get_all()
+    students = student_dao.get_all()
+    classes = school_class_dao.get_all()
+    teachers = teacher_dao.get_all()
 
     scores = [s.diem_tb for s in students if s.diem_tb is not None]
     avg = round(sum(scores) / len(scores), 2) if scores else 0.0
@@ -79,7 +79,7 @@ def get_dashboard_stats(activity_page: int = 1, activity_page_size: int = 5) -> 
         top_classes = students_per_class[:6]
         other_count = sum(item["value"] for item in students_per_class[6:])
         if other_count:
-            top_classes.append({"label": "Khac", "value": other_count})
+            top_classes.append({"label": "Khọc", "value": other_count})
         students_per_class = top_classes
     score_per_class.sort(key=lambda item: item["value"], reverse=True)
 
@@ -98,7 +98,7 @@ def get_dashboard_stats(activity_page: int = 1, activity_page_size: int = 5) -> 
             "Cần kiểm tra phân công hoặc cập nhật trạng thái."
         )
 
-    empty_classes = [lop.ten_lop for lop in classes if hoc_sinh_dao.count_by_class(lop.ma_lop) == 0]
+    empty_classes = [lop.ten_lop for lop in classes if student_dao.count_by_class(lop.ma_lop) == 0]
     if empty_classes:
         notifications.append(f"⚠ Lớp chưa có học sinh: {', '.join(empty_classes)}")
 
@@ -122,16 +122,16 @@ def get_dashboard_stats(activity_page: int = 1, activity_page_size: int = 5) -> 
         lowered = text.lower()
         if "dÆ°á»›i 5" in lowered or "dưới 5" in lowered or "duoi 5" in lowered:
             level = "critical"
-            title = "Hoc sinh co diem TB duoi 5"
+            title = "Học sinh có Điểm TB duoi 5"
         elif "táº¡m nghá»‰" in lowered or "tạm nghỉ" in lowered or "ngá»«ng" in lowered or "ngừng" in lowered or "tháº¥p" in lowered or "thấp" in lowered:
             level = "warning"
-            title = "Can kiem tra"
+            title = "Cần kiểm tra"
         elif text.startswith("âœ“"):
             level = "success"
-            title = "He thong on dinh"
+            title = "Hệ thống ổn định"
         else:
             level = "info"
-            title = "Thong tin"
+            title = "Thông tin"
         notification_items.append({"level": level, "title": title, "detail": text})
 
     activity_total = get_activity_count()
