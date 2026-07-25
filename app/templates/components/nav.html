@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-primary" href="{{ url_for('dashboard.index') }}">HSMS Web</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Mở menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
+      </ul>
+      <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,48 @@
+:root {
+  --hsms-bg: #f4f6f8;
+  --hsms-border: #d9e0e8;
+  --hsms-text: #111827;
+}
+
+body {
+  background: var(--hsms-bg);
+  color: var(--hsms-text);
+}
+
+.page-header {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--hsms-border);
+  border-radius: 8px;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.25rem;
+}
+
+.module-card {
+  background: #ffffff;
+  border: 1px solid var(--hsms-border);
+  border-radius: 8px;
+  color: var(--hsms-text);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 96px;
+  padding: 1rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.module-card:hover {
+  border-color: #2f6fed;
+  transform: translateY(-1px);
+}
+
+.module-card span {
+  font-weight: 700;
+}
+
+.module-card small {
+  color: #667085;
+}

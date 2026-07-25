@@ -1,0 +1,1 @@
+"""Student affairs blueprint."""

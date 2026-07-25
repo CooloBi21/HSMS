@@ -2,12 +2,23 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
+.pytest_cache/
 .venv/
 venv/
 env/
 
 # Database (local)
 data/*.db
+instance/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Deployment/runtime
+backups/*
+!backups/.gitkeep
 
 # IDE
 .vscode/

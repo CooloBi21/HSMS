@@ -275,6 +275,8 @@ pip install -r requirements.txt
 
 ## Chạy ứng dụng
 
+### Desktop
+
 ```powershell
 cd D:\VisualStudioCode\Projects\HSMS
 .venv\Scripts\Activate.ps1
@@ -285,6 +287,23 @@ Khi chạy lần đầu, SQLite database được tạo trong:
 
 ```text
 data/hsms.db
+```
+
+### Web
+
+Phiên bản web được phát triển trên branch `cloud-deployment` và chạy qua Flask application factory trong `app/`.
+
+```powershell
+cd D:\VisualStudioCode\Projects\HSMS
+.venv\Scripts\Activate.ps1
+$env:HSMS_ENV='development'
+flask --app run:app run --host 0.0.0.0 --port 5000
+```
+
+Kiểm tra healthcheck:
+
+```powershell
+python -c "from app import create_app; app=create_app('testing'); client=app.test_client(); print(client.get('/health').status_code, client.get('/health').json)"
 ```
 
 ## Kiểm tra nhanh

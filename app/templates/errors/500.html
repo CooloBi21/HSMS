@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Lỗi hệ thống | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="text-uppercase text-danger fw-semibold mb-2">500</p>
+    <h1 class="h2 mb-2">Lỗi hệ thống</h1>
+    <p class="text-secondary mb-0">Máy chủ gặp lỗi khi xử lý yêu cầu. Vui lòng kiểm tra log ứng dụng.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('dashboard.index') }}">Về tổng quan</a>
+</section>
+{% endblock %}

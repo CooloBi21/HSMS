@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tổng quan | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Giai đoạn 1</p>
+    <h1 class="h2 mb-2">Nền web HSMS đã sẵn sàng</h1>
+    <p class="text-secondary mb-0">Flask app khởi động bằng application factory, blueprint, extensions, error handler và logging tập trung.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('dashboard.healthcheck') }}">Healthcheck</a>
+</section>
+
+<section class="row g-3 mt-2">
+  {% for title, endpoint in modules %}
+    <div class="col-12 col-sm-6 col-xl-3">
+      <a class="module-card" href="{{ url_for(endpoint) }}">
+        <span>{{ title }}</span>
+        <small>Blueprint đã đăng ký</small>
+      </a>
+    </div>
+  {% endfor %}
+</section>
+{% endblock %}
