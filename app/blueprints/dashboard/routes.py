@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from flask import Blueprint, current_app, jsonify, render_template
 
+from app.security import permission_required
+
 bp = Blueprint("dashboard", __name__)
 
 
 @bp.get("/")
+@permission_required("dashboard:view")
 def index():
     modules = [
         ("Tuyển sinh", "admissions.index"),

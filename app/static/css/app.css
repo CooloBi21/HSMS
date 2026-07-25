@@ -46,3 +46,18 @@ body {
 .module-card small {
   color: #667085;
 }
+
+.auth-shell {
+  display: grid;
+  min-height: calc(100vh - 120px);
+  place-items: center;
+}
+
+.auth-panel {
+  background: #ffffff;
+  border: 1px solid var(--hsms-border);
+  border-radius: 8px;
+  max-width: 420px;
+  padding: 1.5rem;
+  width: 100%;
+}

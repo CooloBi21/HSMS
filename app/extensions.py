@@ -16,6 +16,8 @@ login_manager.login_message = "Vui lòng đăng nhập để tiếp tục."
 
 @login_manager.user_loader
 def load_user(user_id: str):  # type: ignore[no-untyped-def]
-    """Resolve logged-in users after the web account model is implemented."""
+    """Resolve logged-in users from the web account table."""
 
-    return None
+    from app.repositories.auth_repository import UserRepository
+
+    return UserRepository.get_by_id(user_id)

@@ -6,18 +6,38 @@
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
+        {% if current_user.is_authenticated and current_user.role == "admin" %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
+        {% elif current_user.is_authenticated and current_user.role == "teacher" %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.assigned') }}">Nhập điểm</a></li>
+        {% elif current_user.is_authenticated and current_user.role == "student" %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('students.me') }}">Hồ sơ của tôi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.my_class') }}">Lớp của tôi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('training.my_schedule') }}">Lịch học</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.my_grades') }}">Điểm số</a></li>
+        {% endif %}
       </ul>
-      <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+      {% if current_user.is_authenticated %}
+        <a class="btn btn-outline-secondary me-2" href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
+        <form method="post" action="{{ url_for('auth.logout') }}" class="d-inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline-primary" type="submit">Đăng xuất</button>
+        </form>
+      {% else %}
+        <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+      {% endif %}
     </div>
   </div>
 </nav>

@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Activity log | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header mb-3">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Admin</p>
+    <h1 class="h2 mb-2">Activity log</h1>
+    <p class="text-secondary mb-0">Theo dõi thao tác hệ thống kèm người thực hiện.</p>
+  </div>
+</section>
+
+<div class="table-responsive bg-white border rounded-2">
+  <table class="table table-hover align-middle mb-0">
+    <thead>
+      <tr>
+        <th>Thời gian</th>
+        <th>Người thực hiện</th>
+        <th>Module</th>
+        <th>Hành động</th>
+        <th>Đối tượng</th>
+        <th>Chi tiết</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+        <tr>
+          <td>{{ log.created_at }}</td>
+          <td>{{ log.actor.username if log.actor else "Hệ thống" }}</td>
+          <td>{{ log.module }}</td>
+          <td>{{ log.action }}</td>
+          <td>{{ log.target_type or "" }} {{ log.target_id or "" }}</td>
+          <td>{{ log.detail or "" }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" class="text-center text-secondary py-4">Chưa có activity log.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

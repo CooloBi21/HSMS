@@ -306,6 +306,24 @@ Kiểm tra healthcheck:
 python -c "from app import create_app; app=create_app('testing'); client=app.test_client(); print(client.get('/health').status_code, client.get('/health').json)"
 ```
 
+Khởi tạo bảng và seed tài khoản admin đầu tiên:
+
+```powershell
+$env:ADMIN_USERNAME='admin'
+$env:ADMIN_PASSWORD='ChangeMe123'
+$env:ADMIN_FULL_NAME='System Admin'
+flask --app run:app init-db
+flask --app run:app seed-admin
+```
+
+Các route xác thực nền:
+
+- `/auth/login`: đăng nhập.
+- `/auth/logout`: đăng xuất bằng `POST`.
+- `/auth/change-password`: đổi mật khẩu.
+- `/auth/activity-log`: activity log dành cho admin.
+- `/health`: healthcheck không yêu cầu đăng nhập.
+
 ## Kiểm tra nhanh
 
 Kiểm tra cú pháp toàn bộ file Python:

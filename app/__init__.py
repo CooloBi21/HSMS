@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from importlib import import_module
+
 from flask import Flask
 
 from app.commands import register_commands
@@ -13,6 +15,7 @@ def create_app(config_name: str | None = None) -> Flask:
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(get_config(config_name))
+    import_module("app.models.auth")
 
     configure_logging(app)
     init_extensions(app)
