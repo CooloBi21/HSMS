@@ -90,8 +90,11 @@ class AuthService:
         role: Role,
         actor: User | None = None,
         status: AccountStatus = AccountStatus.ACTIVE,
+        email: str | None = None,
         student_code: str | None = None,
         teacher_code: str | None = None,
+        student_id: int | None = None,
+        teacher_id: int | None = None,
         must_change_password: bool = False,
     ) -> User:
         AuthService.validate_password(password)
@@ -101,10 +104,13 @@ class AuthService:
         user = User(
             username=username.strip(),
             full_name=full_name.strip(),
+            email=email,
             role=role.value,
             status=status.value,
             student_code=student_code,
             teacher_code=teacher_code,
+            student_id=student_id,
+            teacher_id=teacher_id,
             must_change_password=must_change_password,
         )
         user.set_password(password)
@@ -212,6 +218,10 @@ class AuthService:
             ip_address=ip_address,
             user_agent=user_agent,
         )
+        if db.session().in_transaction():
+            db.session.add(log)
+            db.session.flush()
+            return log
         return ActivityLogRepository.create(log)
 
 

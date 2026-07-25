@@ -27,11 +27,14 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     full_name = db.Column(db.String(160), nullable=False)
+    email = db.Column(db.String(160), unique=True, nullable=True, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(30), nullable=False, index=True)
     status = db.Column(db.String(30), nullable=False, default=AccountStatus.ACTIVE.value, index=True)
     student_code = db.Column(db.String(30), nullable=True, index=True)
     teacher_code = db.Column(db.String(30), nullable=True, index=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id", ondelete="SET NULL"), unique=True, nullable=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id", ondelete="SET NULL"), unique=True, nullable=True)
     must_change_password = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
@@ -42,6 +45,8 @@ class User(UserMixin, db.Model):
     )
 
     activity_logs = db.relationship("ActivityLog", back_populates="actor", lazy="dynamic")
+    student = db.relationship("Student", back_populates="user_account")
+    teacher = db.relationship("Teacher", back_populates="user_account")
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)

@@ -15,7 +15,7 @@ def create_app(config_name: str | None = None) -> Flask:
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(get_config(config_name))
-    import_module("app.models.auth")
+    import_module("app.models")
 
     configure_logging(app)
     init_extensions(app)
