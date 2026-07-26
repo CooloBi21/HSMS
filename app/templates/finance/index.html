@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tài chính | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header mb-3">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Tài chính</p>
+    <h1 class="h2 mb-2">Hóa đơn, thanh toán và công nợ</h1>
+    <p class="text-secondary mb-0">Module tài chính quản lý hóa đơn, thanh toán, công nợ và học bổng.</p>
+  </div>
+</section>
+
+<section class="row g-3 mb-3">
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Hóa đơn</span><strong>{{ data.summary.invoices }}</strong><small>Đã lập</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Tổng phải thu</span><strong>{{ "{:,.0f}".format(data.summary.total_amount) }}</strong><small>VNĐ</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Đã thu</span><strong>{{ "{:,.0f}".format(data.summary.paid_amount) }}</strong><small>VNĐ</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Công nợ</span><strong>{{ "{:,.0f}".format(data.summary.debt_amount) }}</strong><small>{{ data.summary.overdue }} quá hạn</small></div></div>
+</section>
+
+<section class="feature-grid mb-3">
+  <div class="feature-card"><span>Tính học phí</span><p class="text-secondary mb-0">Theo số tín chỉ hoặc mức thu cố định từng kỳ.</p></div>
+  <div class="feature-card"><span>Thanh toán</span><p class="text-secondary mb-0">Ghi nhận tiền mặt, chuyển khoản, ví điện tử và thẻ.</p></div>
+  <div class="feature-card"><span>Công nợ</span><p class="text-secondary mb-0">Theo dõi số còn phải thu và trạng thái quá hạn.</p></div>
+  <div class="feature-card"><span>Học bổng</span><p class="text-secondary mb-0">Nền dữ liệu phục vụ xét học bổng theo điểm thực tế.</p></div>
+</section>
+
+<section class="content-panel">
+  <h2 class="h5 mb-3">Hóa đơn gần đây</h2>
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>Mã</th><th>Học sinh</th><th>Kỳ</th><th>Loại</th><th>Tổng</th><th>Đã thu</th><th>Trạng thái</th></tr></thead>
+      <tbody>
+        {% for invoice in data.invoices %}
+          <tr>
+            <td>{{ invoice.invoice_code }}</td>
+            <td>{{ invoice.student.full_name }}</td>
+            <td>{{ invoice.term }}</td>
+            <td>{{ invoice.invoice_type }}</td>
+            <td>{{ "{:,.0f}".format(invoice.total_amount) }}</td>
+            <td>{{ "{:,.0f}".format(invoice.paid_amount) }}</td>
+            <td><span class="status-pill">{{ invoice.status }}</span></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7" class="text-secondary">Chưa có hóa đơn.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

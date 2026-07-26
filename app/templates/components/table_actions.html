@@ -1,0 +1,7 @@
+<div class="d-flex gap-2 justify-content-end">
+  <a class="btn btn-sm btn-outline-primary" href="{{ edit_url }}">Sửa</a>
+  <form method="post" action="{{ delete_url }}" onsubmit="return confirm('Xác nhận xóa?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+  </form>
+</div>

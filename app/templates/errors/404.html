@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Không tìm thấy | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="text-uppercase text-danger fw-semibold mb-2">404</p>
+    <h1 class="h2 mb-2">Không tìm thấy trang</h1>
+    <p class="text-secondary mb-0">Đường dẫn bạn truy cập chưa tồn tại trong HSMS Web.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('dashboard.index') }}">Về tổng quan</a>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Hồ sơ của tôi | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div>
+    <h1 class="h2 mb-1">Hồ sơ của tôi</h1>
+    <p class="text-secondary mb-0">{{ student.code }} · {{ student.full_name }}</p>
+  </div>
+</section>
+<div class="content-panel">
+  <dl class="profile-grid">
+    <dt>Lớp</dt><dd>{{ student.school_class.name if student.school_class else "Chưa phân lớp" }}</dd>
+    <dt>Trạng thái học tập</dt><dd>{{ student.learning_status }}</dd>
+    <dt>Diện chính sách</dt><dd>{{ student.policy_type or "Không thuộc diện" }}</dd>
+    <dt>Phụ huynh</dt><dd>{{ student.parent_name or "" }}</dd>
+    <dt>SĐT phụ huynh</dt><dd>{{ student.parent_phone or "" }}</dd>
+    <dt>Hộ khẩu</dt><dd>{{ student.household or "" }}</dd>
+    <dt>Địa chỉ</dt><dd>{{ student.address or "" }}</dd>
+  </dl>
+</div>
+{% endblock %}

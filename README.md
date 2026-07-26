@@ -13,6 +13,25 @@ HSMS là ứng dụng desktop dùng để quản lý toàn bộ quy trình vận
 - `configparser` để đọc cấu hình hệ thống
 - Kiến trúc provider/data layer để có thể mở rộng kết nối CSDL
 
+## Định hướng phiên bản
+
+### Desktop
+
+Phiên bản desktop hiện tại là bản ổn định của HSMS, chạy bằng CustomTkinter và SQLite. Bản này được giữ lại để phục vụ báo cáo, kiểm thử nghiệp vụ và làm mốc khôi phục khi triển khai web/cloud.
+
+Mốc bảo vệ:
+
+- Tag khôi phục: `desktop-v1.0`
+- Nhánh desktop ổn định: `desktop-final`
+
+### Web
+
+Phiên bản web sẽ được xây dựng kế thừa nghiệp vụ đã có từ desktop, ưu tiên tái sử dụng model, service, quy tắc kiểm tra dữ liệu và cấu trúc phân tầng. Phần giao diện CustomTkinter sẽ được thay bằng Flask/Jinja/Bootstrap. CSDL triển khai web dự kiến chuyển sang PostgreSQL thông qua SQLAlchemy.
+
+### Deployment
+
+Các công việc Docker, PostgreSQL, Nginx, Cloudflare Tunnel và Cloudflare Access được thực hiện trên nhánh `cloud-deployment`. Nhánh này là nơi phát triển triển khai cloud, không sửa trực tiếp vào `desktop-final`.
+
 ## Cấu trúc dự án
 
 ```text
@@ -256,6 +275,8 @@ pip install -r requirements.txt
 
 ## Chạy ứng dụng
 
+### Desktop
+
 ```powershell
 cd D:\VisualStudioCode\Projects\HSMS
 .venv\Scripts\Activate.ps1
@@ -267,6 +288,60 @@ Khi chạy lần đầu, SQLite database được tạo trong:
 ```text
 data/hsms.db
 ```
+
+### Web
+
+Phiên bản web được phát triển trên branch `cloud-deployment` và chạy qua Flask application factory trong `app/`.
+
+```powershell
+cd D:\VisualStudioCode\Projects\HSMS
+.venv\Scripts\Activate.ps1
+$env:HSMS_ENV='development'
+flask --app run:app run --host 0.0.0.0 --port 5000
+```
+
+Kiểm tra healthcheck:
+
+```powershell
+python -c "from app import create_app; app=create_app('testing'); client=app.test_client(); print(client.get('/health').status_code, client.get('/health').json)"
+```
+
+Khởi tạo bảng và seed tài khoản admin đầu tiên:
+
+```powershell
+$env:ADMIN_USERNAME='admin'
+$env:ADMIN_PASSWORD='ChangeMe123'
+$env:ADMIN_FULL_NAME='System Admin'
+flask --app run:app init-db
+flask --app run:app seed-admin
+```
+
+Các route xác thực nền:
+
+- `/auth/login`: đăng nhập.
+- `/auth/logout`: đăng xuất bằng `POST`.
+- `/auth/change-password`: đổi mật khẩu.
+- `/auth/activity-log`: activity log dành cho admin.
+- `/auth/accounts`: quản lý tài khoản dành cho admin.
+- `/health`: healthcheck không yêu cầu đăng nhập.
+
+Các module MVP Web:
+
+- `/`: dashboard có tổng học sinh, lớp, giáo viên, điểm trung bình, phân bố học lực, học sinh theo lớp, cảnh báo dữ liệu và hoạt động gần đây.
+- `/students/`: danh sách, thêm, sửa, xóa, tìm kiếm, lọc lớp và phân trang học sinh.
+- `/classes/`: danh sách, thêm, sửa, xóa lớp, lọc khối và hiển thị sĩ số.
+- `/teachers/`: danh sách, thêm, sửa, xóa giáo viên, lọc trạng thái và validation email/số điện thoại.
+- `/auth/accounts`: tạo tài khoản, xem vai trò/trạng thái và cập nhật trạng thái tài khoản.
+- `/profiles/`: quản lý hồ sơ học sinh, cập nhật lý lịch, phụ huynh, trạng thái học tập và diện chính sách.
+- `/profiles/me`: học sinh xem hồ sơ của chính mình.
+
+Các guard nghiệp vụ quan trọng đã được đặt ở tầng service:
+
+- Tuyển sinh: chỉ hồ sơ đạt mới nhập học, không nhập học hai lần, kiểm tra lớp/sĩ số và nhập học trong transaction.
+- Đào tạo: chặn đăng ký trùng, không tính bản ghi đã hủy như đăng ký active, chặn vượt sĩ số và trùng phòng/giáo viên/lớp.
+- Khảo thí: kiểm tra miền điểm, kiểm tra học sinh thuộc lớp/học phần, phúc khảo cập nhật kết quả, trọng số điểm truyền qua cấu hình service.
+- Tài chính: chặn thanh toán âm/vượt nợ, xóa thanh toán tính lại hóa đơn, xét quá hạn theo ngày đến hạn, chặn xóa hóa đơn đã có thanh toán, học bổng lấy điểm thực tế.
+- Tốt nghiệp: chặn cấp bằng khi chưa đạt, số bằng/sổ gốc unique, cấp bằng cập nhật trạng thái tốt nghiệp.
 
 ## Kiểm tra nhanh
 
@@ -291,3 +366,97 @@ python -c "from ui.app import HSMSApp; print('app import ok')"
 - Không tạo kết nối CSDL trực tiếp trong service.
 - Các module mới nên dùng tên file tiếng Anh để thống nhất với cấu trúc hiện tại.
 - Các tích hợp ngoài như thanh toán thật, in phôi bằng, chữ ký số, email/SMS hoặc cổng học sinh online cần được tách thành module tích hợp riêng.
+
+## Responsive và truy cập nhiều thiết bị
+
+Phiên bản web đã được gia cố responsive cho các độ rộng chính: điện thoại 360 px, tablet 768 px, laptop 1024 px và desktop 1280 px trở lên. Thanh điều hướng chuyển sang off-canvas trên màn hình nhỏ, bảng dữ liệu nằm trong wrapper responsive, form không làm tràn toàn trang, button có kích thước phù hợp thao tác cảm ứng và modal được giới hạn theo chiều cao màn hình.
+
+Các kiểm tra tự động hiện có xác nhận:
+
+- Layout có viewport meta và off-canvas navigation.
+- CSS có guard chống tràn ngang, bảng responsive, button cảm ứng và modal giới hạn chiều cao.
+- Tài khoản học sinh không truy cập được route quản trị và chỉ xem hồ sơ của chính mình.
+- Web app trong thư mục `app/` không phụ thuộc CustomTkinter/tkinter.
+
+Các kiểm thử bằng thiết bị thật như Android, iPhone/iPad, mạng 4G/5G và hai thiết bị đăng nhập đồng thời cần thực hiện sau khi triển khai lên VM/Docker/Cloudflare vì phụ thuộc môi trường phần cứng và mạng ngoài.
+
+## Docker hóa và triển khai VM
+
+Phiên bản web có thể chạy bằng Docker Compose với các service:
+
+- `hsms-web`: Flask app chạy bằng Gunicorn trên port nội bộ `8000`.
+- `postgres`: PostgreSQL nội bộ trên Docker network, không publish port `5432`.
+- `nginx`: reverse proxy đến `hsms-web:8000`, publish local VM qua `127.0.0.1:8080`.
+- `cloudflared`: Cloudflare Tunnel, token lấy từ `.env`.
+- `backup`: chạy `pg_dump` định kỳ và lưu file vào thư mục `backups/`.
+
+Luồng container:
+
+```text
+cloudflared -> nginx:80 -> hsms-web:8000 -> postgres:5432
+```
+
+Tạo `.env` từ `.env.example` và điền secret thật:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Các biến bắt buộc cần đặt trước khi chạy production:
+
+- `SECRET_KEY`
+- `POSTGRES_PASSWORD`
+- `ADMIN_PASSWORD`
+- `CLOUDFLARE_TUNNEL_TOKEN`
+
+Chạy hệ thống:
+
+```powershell
+docker compose up -d --build
+```
+
+Kiểm tra trạng thái:
+
+```powershell
+docker compose ps
+```
+
+Kiểm tra nội bộ trong VM:
+
+```powershell
+curl http://127.0.0.1:8080/health
+```
+
+Với Cloudflare Tunnel dạng token, Public Hostname `hsms.coolobi.id.vn` cần được cấu hình trong Cloudflare Zero Trust để trỏ origin/service về:
+
+```text
+http://nginx:80
+```
+
+Không commit `.env`, token tunnel, credential Cloudflare, PostgreSQL data, file backup database, database local hoặc log nhạy cảm.
+
+## Nạp dữ liệu mẫu quy mô lớn
+
+HSMS Web có CLI command `seed-demo-data` để nạp dữ liệu mẫu có kiểm soát cho môi trường local/staging/production khi cần nghiệm thu giao diện và nghiệp vụ:
+
+- 500 học sinh có thông tin cá nhân, phụ huynh, trạng thái học tập và diện chính sách.
+- 100 giáo viên có thông tin liên hệ và môn phụ trách.
+- 22 lớp học, trong đó 12 lớp nhận học sinh với sĩ số 41-42 em/lớp và khoảng 10 lớp dự phòng.
+- Học phần, lớp học phần, thời khóa biểu, đăng ký học phần, điểm mẫu và hóa đơn học phí.
+- 8 hồ sơ tuyển sinh trạng thái `pending`.
+
+Command có tính idempotent theo mã dữ liệu mẫu, nên chạy lại không tạo trùng các bản ghi đã có cùng mã.
+
+Chạy local:
+
+```powershell
+flask --app run:app seed-demo-data
+```
+
+Chạy trong Docker production sau khi đã pull/rebuild:
+
+```powershell
+docker compose exec hsms-web flask --app run:app seed-demo-data
+```
+
+Không copy đè database local lên production. Nếu muốn đưa dữ liệu mẫu lên production, dùng command seed hoặc nhập qua giao diện public.

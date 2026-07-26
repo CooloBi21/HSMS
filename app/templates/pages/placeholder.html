@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ title }} | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Blueprint</p>
+    <h1 class="h2 mb-2">{{ title }}</h1>
+    <p class="text-secondary mb-0">{{ message }}</p>
+  </div>
+  <a class="btn btn-outline-primary" href="{{ url_for('dashboard.index') }}">Về tổng quan</a>
+</section>
+{% endblock %}

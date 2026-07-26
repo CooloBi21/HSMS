@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tài khoản | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div><h1 class="h2 mb-1">Tài khoản</h1><p class="text-secondary mb-0">Tạo tài khoản hệ thống và theo dõi trạng thái.</p></div>
+</section>
+<section class="row g-3">
+  <div class="col-12 col-xl-4">
+    <form class="content-panel form-grid single" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Tên đăng nhập<input class="form-control" name="username" required></label>
+      <label>Họ tên<input class="form-control" name="full_name" required></label>
+      <label>Email<input class="form-control" name="email"></label>
+      <label>Mật khẩu<input class="form-control" type="password" name="password" required></label>
+      <label>Vai trò<select class="form-select" name="role"><option value="admin">Admin</option><option value="teacher">Teacher</option><option value="student">Student</option></select></label>
+      <label>Trạng thái<select class="form-select" name="status"><option value="active">active</option><option value="locked">locked</option><option value="disabled">disabled</option></select></label>
+      <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
+    </form>
+  </div>
+  <div class="col-12 col-xl-8">
+    <div class="table-responsive bg-white border rounded-2">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Tên đăng nhập</th><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th class="text-end">Cập nhật</th></tr></thead>
+        <tbody>
+          {% for account in accounts %}
+            <tr>
+              <td>{{ account.username }}</td><td>{{ account.full_name }}</td><td>{{ account.email or "" }}</td><td>{{ account.role }}</td><td>{{ account.status }}</td>
+              <td>
+                <form class="d-flex gap-2 justify-content-end" method="post" action="{{ url_for('auth.update_account_status', user_id=account.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <select class="form-select form-select-sm status-select" name="status">
+                    <option value="active" {% if account.status == 'active' %}selected{% endif %}>active</option>
+                    <option value="locked" {% if account.status == 'locked' %}selected{% endif %}>locked</option>
+                    <option value="disabled" {% if account.status == 'disabled' %}selected{% endif %}>disabled</option>
+                  </select>
+                  <button class="btn btn-sm btn-outline-primary" type="submit">Lưu</button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="text-center text-secondary py-4">Chưa có tài khoản.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

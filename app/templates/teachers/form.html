@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ "Sửa" if teacher else "Thêm" }} giáo viên | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3"><h1 class="h2 mb-0">{{ "Sửa" if teacher else "Thêm" }} giáo viên</h1></section>
+<form class="content-panel form-grid" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Mã giáo viên<input class="form-control" name="code" value="{{ teacher.code if teacher else '' }}" required></label>
+  <label>Họ tên<input class="form-control" name="full_name" value="{{ teacher.full_name if teacher else '' }}" required></label>
+  <label>Email<input class="form-control" name="email" value="{{ teacher.email if teacher and teacher.email else '' }}"></label>
+  <label>Điện thoại<input class="form-control" name="phone" value="{{ teacher.phone if teacher and teacher.phone else '' }}"></label>
+  <label>Môn phụ trách<input class="form-control" name="subject" value="{{ teacher.subject if teacher and teacher.subject else '' }}"></label>
+  <label>Trạng thái<select class="form-select" name="status"><option value="active" {% if not teacher or teacher.status == 'active' %}selected{% endif %}>active</option><option value="inactive" {% if teacher and teacher.status == 'inactive' %}selected{% endif %}>inactive</option></select></label>
+  <div class="span-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Lưu</button><a class="btn btn-outline-secondary" href="{{ url_for('teachers.index') }}">Hủy</a></div>
+</form>
+{% endblock %}

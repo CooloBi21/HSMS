@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ "Sửa" if school_class else "Thêm" }} lớp học | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3"><h1 class="h2 mb-0">{{ "Sửa" if school_class else "Thêm" }} lớp học</h1></section>
+<form class="content-panel form-grid" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Mã lớp<input class="form-control" name="code" value="{{ school_class.code if school_class else '' }}" required></label>
+  <label>Tên lớp<input class="form-control" name="name" value="{{ school_class.name if school_class else '' }}" required></label>
+  <label>Khối<input class="form-control" name="grade_level" value="{{ school_class.grade_level if school_class and school_class.grade_level else '' }}"></label>
+  <div class="span-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Lưu</button><a class="btn btn-outline-secondary" href="{{ url_for('classes.index') }}">Hủy</a></div>
+</form>
+{% endblock %}

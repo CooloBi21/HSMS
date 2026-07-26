@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Khảo thí | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header mb-3">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Khảo thí</p>
+    <h1 class="h2 mb-2">Lịch thi, điểm số và GPA</h1>
+    <p class="text-secondary mb-0">Module khảo thí quản lý lịch thi, điểm, GPA, điều kiện thi và phúc khảo.</p>
+  </div>
+</section>
+
+<section class="row g-3 mb-3">
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Bảng điểm</span><strong>{{ data.summary.grade_records }}</strong><small>Bản ghi</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Điểm TB</span><strong>{{ data.summary.average10 }}</strong><small>Thang 10</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Học sinh có điểm</span><strong>{{ data.summary.students_with_scores }}</strong><small>Đã ghi nhận</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Phúc khảo</span><strong>{{ data.summary.reviews_pending }}</strong><small>Đang chờ</small></div></div>
+</section>
+
+<section class="feature-grid mb-3">
+  <div class="feature-card"><span>Lập lịch thi</span><p class="text-secondary mb-0">Nền dữ liệu phục vụ chia ca, phòng thi và số báo danh.</p></div>
+  <div class="feature-card"><span>Nhập điểm</span><p class="text-secondary mb-0">Theo dõi điểm thành phần, giữa kỳ và cuối kỳ.</p></div>
+  <div class="feature-card"><span>Tính GPA</span><p class="text-secondary mb-0">Hiển thị điểm thang 10, GPA thang 4 và xếp loại chữ.</p></div>
+  <div class="feature-card"><span>Phúc khảo</span><p class="text-secondary mb-0">Theo dõi yêu cầu điều chỉnh điểm sau khi chấm lại.</p></div>
+</section>
+
+<section class="row g-3">
+  <div class="col-12 col-xl-8">
+    <div class="content-panel">
+      <h2 class="h5 mb-3">Bảng điểm gần đây</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead><tr><th>Học sinh</th><th>Học phần</th><th>TP</th><th>GK</th><th>CK</th><th>TB</th><th>GPA</th></tr></thead>
+          <tbody>
+            {% for record in data.records %}
+              <tr>
+                <td>{{ record.student.full_name }}</td>
+                <td>{{ record.section.course.name }}</td>
+                <td>{{ record.component_score or "-" }}</td>
+                <td>{{ record.midterm_score or "-" }}</td>
+                <td>{{ record.final_score or "-" }}</td>
+                <td>{{ record.average10 or "-" }}</td>
+                <td><span class="status-pill">{{ record.gpa4 or "-" }}</span></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" class="text-secondary">Chưa có dữ liệu điểm.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-4">
+    <div class="content-panel">
+      <h2 class="h5 mb-3">Phân bố xếp loại</h2>
+      <div class="chart-list">
+        {% for label, count in data.grade_distribution %}
+          <div><span>{{ label }}</span><strong>{{ count }}</strong></div>
+        {% else %}
+          <p class="text-secondary mb-0">Chưa có xếp loại điểm.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

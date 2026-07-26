@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tuyển sinh | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <div>
+    <h1 class="h2 mb-1">Tuyển sinh</h1>
+    <p class="text-secondary mb-0">Tiếp nhận hồ sơ, xét tuyển tự động, nhập học và cấp mã học sinh.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('admissions.create') }}">Thêm hồ sơ</a>
+</section>
+
+<form class="filter-bar mb-3" method="get">
+  <input class="form-control" name="q" value="{{ search }}" placeholder="Tìm mã hồ sơ, họ tên hoặc số điện thoại">
+  <select class="form-select" name="status">
+    <option value="">Tất cả trạng thái</option>
+    {% for status in ["pending", "approved", "rejected", "enrolled"] %}
+      <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-outline-primary" type="submit">Lọc</button>
+</form>
+
+<div class="table-responsive bg-white border rounded-2">
+  <table class="table table-hover align-middle mb-0">
+    <thead>
+      <tr>
+        <th>Mã hồ sơ</th>
+        <th>Thí sinh</th>
+        <th>Điểm</th>
+        <th>Lớp dự kiến</th>
+        <th>Trạng thái</th>
+        <th>Mã HS</th>
+        <th class="text-end">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in applications %}
+        <tr>
+          <td>{{ item.application_code }}</td>
+          <td><strong>{{ item.full_name }}</strong><br><span class="text-secondary">{{ item.phone or "" }}</span></td>
+          <td>{{ item.admission_score if item.admission_score is not none else "" }}</td>
+          <td>{{ item.desired_class.name if item.desired_class else "" }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.student.code if item.student else "" }}</td>
+          <td>
+            <div class="d-flex gap-2 justify-content-end flex-wrap">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admissions.edit', application_id=item.id) }}">Sửa</a>
+              <form method="post" action="{{ url_for('admissions.screen', application_id=item.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">Xét tuyển</button>
+              </form>
+              <form method="post" action="{{ url_for('admissions.enroll', application_id=item.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-success" type="submit">Nhập học</button>
+              </form>
+              <form method="post" action="{{ url_for('admissions.delete', application_id=item.id) }}" onsubmit="return confirm('Xác nhận xóa hồ sơ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-center text-secondary py-4">Chưa có hồ sơ tuyển sinh.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

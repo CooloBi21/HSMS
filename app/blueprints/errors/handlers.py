@@ -1,0 +1,18 @@
+from __future__ import annotations
+
+from flask import Flask, render_template
+
+
+def register_error_handlers(app: Flask) -> None:
+    @app.errorhandler(404)
+    def not_found(error):  # type: ignore[no-untyped-def]
+        return render_template("errors/404.html"), 404
+
+    @app.errorhandler(403)
+    def forbidden(error):  # type: ignore[no-untyped-def]
+        return render_template("errors/403.html"), 403
+
+    @app.errorhandler(500)
+    def internal_server_error(error):  # type: ignore[no-untyped-def]
+        app.logger.exception("Unhandled server error: %s", error)
+        return render_template("errors/500.html"), 500

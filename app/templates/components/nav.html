@@ -1,0 +1,81 @@
+{% set endpoint = request.endpoint or "" %}
+{% macro nav_link(endpoint_name, label) -%}
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if endpoint.startswith(endpoint_name) else '' }}" href="{{ url_for(endpoint_name ~ '.index') }}">{{ label }}</a>
+  </li>
+{%- endmacro %}
+
+{% macro nav_items() -%}
+  {% if current_user.is_authenticated and current_user.role == "admin" %}
+    {{ nav_link("admissions", "Tuyển sinh") }}
+    {{ nav_link("students", "Học sinh") }}
+    {{ nav_link("classes", "Lớp học") }}
+    {{ nav_link("teachers", "Giáo viên") }}
+    {{ nav_link("profiles", "Hồ sơ") }}
+    {{ nav_link("training", "Đào tạo") }}
+    {{ nav_link("exams", "Khảo thí") }}
+    {{ nav_link("finance", "Tài chính") }}
+    {{ nav_link("affairs", "Công tác SV") }}
+    {{ nav_link("graduation", "Tốt nghiệp") }}
+    <li class="nav-item"><a class="nav-link {{ 'active' if endpoint.startswith('auth.accounts') else '' }}" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
+    <li class="nav-item"><a class="nav-link {{ 'active' if endpoint.startswith('auth.activity_log') else '' }}" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
+  {% elif current_user.is_authenticated and current_user.role == "teacher" %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.assigned') }}">Nhập điểm</a></li>
+  {% elif current_user.is_authenticated and current_user.role == "student" %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.me') }}">Hồ sơ của tôi</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.my_class') }}">Lớp của tôi</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('training.my_schedule') }}">Lịch học</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.my_grades') }}">Điểm số</a></li>
+  {% endif %}
+{%- endmacro %}
+
+{% macro account_actions(extra_class="") -%}
+  <div class="nav-actions {{ extra_class }}">
+    {% if current_user.is_authenticated %}
+      <span class="nav-user">{{ current_user.full_name or current_user.username }}</span>
+      <a class="btn btn-outline-secondary touch-target" href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-danger touch-target logout-button" type="submit">Đăng xuất</button>
+      </form>
+    {% else %}
+      <a class="btn btn-outline-primary touch-target" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+    {% endif %}
+  </div>
+{%- endmacro %}
+
+<nav class="navbar app-navbar sticky-top">
+  <div class="container-fluid nav-topbar">
+    <a class="navbar-brand app-brand" href="{{ url_for('dashboard.index') }}">
+      <span class="brand-mark">HS</span>
+      <span>HSMS Web</span>
+    </a>
+    <button class="navbar-toggler touch-target d-xxl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav" aria-controls="mainNav" aria-label="Mở menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    {{ account_actions("desktop-actions d-none d-xxl-flex") }}
+  </div>
+
+  <div class="nav-link-strip d-none d-xxl-block">
+    <div class="container-fluid">
+      <ul class="navbar-nav app-nav-list desktop-nav-list flex-row flex-nowrap">
+        {{ nav_items() }}
+      </ul>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-end nav-canvas" tabindex="-1" id="mainNav" aria-labelledby="mainNavLabel">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title" id="mainNavLabel">HSMS Web</h5>
+      <button type="button" class="btn-close touch-target" data-bs-dismiss="offcanvas" aria-label="Đóng menu"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="navbar-nav app-nav-list mobile-nav-list">
+        {{ nav_items() }}
+      </ul>
+      {{ account_actions("mobile-actions d-xxl-none") }}
+    </div>
+  </div>
+</nav>

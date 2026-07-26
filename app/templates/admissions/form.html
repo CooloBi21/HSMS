@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ "Sửa" if application else "Thêm" }} hồ sơ tuyển sinh | HSMS Web{% endblock %}
+
+{% block content %}
+{% include "components/flash.html" %}
+<section class="page-header mb-3">
+  <h1 class="h2 mb-0">{{ "Sửa" if application else "Thêm" }} hồ sơ tuyển sinh</h1>
+</section>
+
+<form class="content-panel form-grid" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Mã hồ sơ<input class="form-control" name="application_code" value="{{ application.application_code if application else '' }}" placeholder="Tự sinh nếu bỏ trống"></label>
+  <label>Họ tên thí sinh<input class="form-control" name="full_name" value="{{ application.full_name if application else '' }}" required></label>
+  <label>Giới tính<select class="form-select" name="gender"><option value="">Chọn</option><option value="1" {% if application and application.gender == 1 %}selected{% endif %}>Nam</option><option value="0" {% if application and application.gender == 0 %}selected{% endif %}>Nữ</option></select></label>
+  <label>Ngày sinh<input class="form-control" type="date" name="date_of_birth" value="{{ application.date_of_birth if application and application.date_of_birth else '' }}"></label>
+  <label>Điện thoại<input class="form-control" name="phone" value="{{ application.phone if application and application.phone else '' }}"></label>
+  <label>Điểm xét tuyển<input class="form-control" name="admission_score" value="{{ application.admission_score if application and application.admission_score is not none else '' }}"></label>
+  <label>Phụ huynh<input class="form-control" name="parent_name" value="{{ application.parent_name if application and application.parent_name else '' }}"></label>
+  <label>SĐT phụ huynh<input class="form-control" name="parent_phone" value="{{ application.parent_phone if application and application.parent_phone else '' }}"></label>
+  <label>Lớp dự kiến<select class="form-select" name="desired_class_id"><option value="">Chưa chọn</option>{% for item in classes %}<option value="{{ item.id }}" {% if application and application.desired_class_id == item.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}</select></label>
+  <label>Hướng học/ngành<input class="form-control" name="desired_major" value="{{ application.desired_major if application and application.desired_major else '' }}"></label>
+  <label>Trạng thái<select class="form-select" name="status">{% for status in ["pending", "approved", "rejected"] %}<option value="{{ status }}" {% if application and application.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label>
+  <label class="span-2">Địa chỉ<input class="form-control" name="address" value="{{ application.address if application and application.address else '' }}"></label>
+  <label class="span-2">Ghi chú<textarea class="form-control" name="notes" rows="3">{{ application.notes if application and application.notes else '' }}</textarea></label>
+  <div class="span-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Lưu hồ sơ</button><a class="btn btn-outline-secondary" href="{{ url_for('admissions.index') }}">Hủy</a></div>
+</form>
+{% endblock %}
