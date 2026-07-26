@@ -5,7 +5,7 @@
   </li>
 {%- endmacro %}
 
-<nav class="navbar navbar-expand-xl app-navbar sticky-top">
+<nav class="navbar navbar-expand-xxl app-navbar sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand app-brand" href="{{ url_for('dashboard.index') }}">
       <span class="brand-mark">HS</span>
@@ -20,7 +20,7 @@
         <button type="button" class="btn-close touch-target" data-bs-dismiss="offcanvas" aria-label="Đóng menu"></button>
       </div>
       <div class="offcanvas-body">
-        <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+        <ul class="navbar-nav app-nav-list me-auto mb-2 mb-xxl-0">
           {% if current_user.is_authenticated and current_user.role == "admin" %}
             {{ nav_link("admissions", "Tuyển sinh") }}
             {{ nav_link("students", "Học sinh") }}
