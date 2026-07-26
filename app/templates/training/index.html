@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Đào tạo | HSMS Web{% endblock %}
+
+{% block content %}
+<section class="page-header mb-3">
+  <div>
+    <p class="text-uppercase text-primary fw-semibold mb-2">Đào tạo</p>
+    <h1 class="h2 mb-2">Chương trình, học phần và thời khóa biểu</h1>
+    <p class="text-secondary mb-0">Module đào tạo quản lý chương trình, học phần, thời khóa biểu và chuyên cần.</p>
+  </div>
+</section>
+
+<section class="row g-3 mb-3">
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Môn học</span><strong>{{ data.summary.courses }}</strong><small>Đã khai báo</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Lớp học phần</span><strong>{{ data.summary.sections }}</strong><small>Đang quản lý</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Đăng ký</span><strong>{{ data.summary.registrations }}</strong><small>Đang hoạt động</small></div></div>
+  <div class="col-12 col-md-6 col-xl-3"><div class="metric-box"><span>Lịch học</span><strong>{{ data.summary.schedules }}</strong><small>Khung thời gian</small></div></div>
+</section>
+
+<section class="feature-grid mb-3">
+  <div class="feature-card"><span>Khung chương trình</span><p class="text-secondary mb-0">Theo dõi môn học, tín chỉ, khối lớp và môn tiên quyết.</p></div>
+  <div class="feature-card"><span>Đăng ký học phần</span><p class="text-secondary mb-0">Ghi nhận học sinh tham gia từng lớp học phần.</p></div>
+  <div class="feature-card"><span>Thời khóa biểu</span><p class="text-secondary mb-0">Quản lý phòng học, thứ học và tiết học.</p></div>
+  <div class="feature-card"><span>Chuyên cần</span><p class="text-secondary mb-0">Nền dữ liệu phục vụ điểm danh và theo dõi chuyên cần.</p></div>
+</section>
+
+<section class="row g-3">
+  <div class="col-12 col-xl-7">
+    <div class="content-panel">
+      <h2 class="h5 mb-3">Lớp học phần gần đây</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead><tr><th>Mã</th><th>Môn học</th><th>Lớp</th><th>Giáo viên</th><th>Sĩ số</th></tr></thead>
+          <tbody>
+            {% for section in data.sections %}
+              <tr>
+                <td>{{ section.code }}</td>
+                <td>{{ section.course.name }}</td>
+                <td>{{ section.school_class.name if section.school_class else "-" }}</td>
+                <td>{{ section.teacher.full_name if section.teacher else "-" }}</td>
+                <td>{{ section.registrations.filter_by(status="active").count() }} / {{ section.capacity or "-" }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="text-secondary">Chưa có lớp học phần.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-5">
+    <div class="content-panel">
+      <h2 class="h5 mb-3">Lịch học mẫu</h2>
+      <div class="timeline-list">
+        {% for schedule in data.schedules %}
+          <div class="timeline-item">
+            <strong>{{ schedule.weekday }} · Tiết {{ schedule.start_period }}-{{ schedule.end_period }}</strong>
+            <div class="text-secondary">{{ schedule.section.course.name }} · {{ schedule.room }}</div>
+          </div>
+        {% else %}
+          <p class="text-secondary mb-0">Chưa có thời khóa biểu.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

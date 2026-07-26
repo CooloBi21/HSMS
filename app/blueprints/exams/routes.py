@@ -3,6 +3,7 @@ from __future__ import annotations
 from flask import Blueprint, render_template
 
 from app.security import permission_required
+from app.services.operations_overview_service import ExamOverviewService
 
 bp = Blueprint("exams", __name__, url_prefix="/exams")
 
@@ -10,7 +11,7 @@ bp = Blueprint("exams", __name__, url_prefix="/exams")
 @bp.get("/")
 @permission_required("exams:access")
 def index():
-    return render_template("pages/placeholder.html", title="Khảo thí", message="Module khảo thí sẽ quản lý lịch thi, điểm, GPA, điều kiện thi và phúc khảo.")
+    return render_template("exams/index.html", data=ExamOverviewService.overview())
 
 
 @bp.get("/assigned")

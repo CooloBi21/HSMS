@@ -434,3 +434,29 @@ http://nginx:80
 ```
 
 Không commit `.env`, token tunnel, credential Cloudflare, PostgreSQL data, file backup database, database local hoặc log nhạy cảm.
+
+## Nạp dữ liệu mẫu quy mô lớn
+
+HSMS Web có CLI command `seed-demo-data` để nạp dữ liệu mẫu có kiểm soát cho môi trường local/staging/production khi cần nghiệm thu giao diện và nghiệp vụ:
+
+- 500 học sinh có thông tin cá nhân, phụ huynh, trạng thái học tập và diện chính sách.
+- 100 giáo viên có thông tin liên hệ và môn phụ trách.
+- 22 lớp học, trong đó 12 lớp nhận học sinh với sĩ số 41-42 em/lớp và khoảng 10 lớp dự phòng.
+- Học phần, lớp học phần, thời khóa biểu, đăng ký học phần, điểm mẫu và hóa đơn học phí.
+- 8 hồ sơ tuyển sinh trạng thái `pending`.
+
+Command có tính idempotent theo mã dữ liệu mẫu, nên chạy lại không tạo trùng các bản ghi đã có cùng mã.
+
+Chạy local:
+
+```powershell
+flask --app run:app seed-demo-data
+```
+
+Chạy trong Docker production sau khi đã pull/rebuild:
+
+```powershell
+docker compose exec hsms-web flask --app run:app seed-demo-data
+```
+
+Không copy đè database local lên production. Nếu muốn đưa dữ liệu mẫu lên production, dùng command seed hoặc nhập qua giao diện public.

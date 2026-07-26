@@ -6,6 +6,7 @@ import click
 from flask import Flask
 
 from app.extensions import db
+from app.services.demo_seed_service import DemoSeedService
 from app.services.auth_service import create_initial_admin
 
 
@@ -40,3 +41,18 @@ def register_commands(app: Flask) -> None:
         db.create_all()
         user = create_initial_admin(admin_username, admin_password, admin_full_name)
         click.echo(f"Admin account ready: {user.username}")
+
+    @app.cli.command("seed-demo-data")
+    def seed_demo_data() -> None:
+        """Seed deterministic demo data for local/staging verification."""
+
+        db.create_all()
+        summary = DemoSeedService.seed()
+        click.echo(
+            "Demo data ready: "
+            f"{summary.students} students, "
+            f"{summary.teachers} teachers, "
+            f"{summary.classes} classes, "
+            f"{summary.sections} sections, "
+            f"{summary.admissions} admissions."
+        )

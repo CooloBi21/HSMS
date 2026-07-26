@@ -1,6 +1,16 @@
-<nav class="navbar navbar-expand-xl bg-white border-bottom sticky-top">
+{% set endpoint = request.endpoint or "" %}
+{% macro nav_link(endpoint_name, label) -%}
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if endpoint.startswith(endpoint_name) else '' }}" href="{{ url_for(endpoint_name ~ '.index') }}">{{ label }}</a>
+  </li>
+{%- endmacro %}
+
+<nav class="navbar navbar-expand-xl app-navbar sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-primary" href="{{ url_for('dashboard.index') }}">HSMS Web</a>
+    <a class="navbar-brand app-brand" href="{{ url_for('dashboard.index') }}">
+      <span class="brand-mark">HS</span>
+      <span>HSMS Web</span>
+    </a>
     <button class="navbar-toggler touch-target" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav" aria-controls="mainNav" aria-label="Mở menu">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -12,18 +22,18 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav me-auto mb-2 mb-xl-0">
           {% if current_user.is_authenticated and current_user.role == "admin" %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('admissions.index') }}">Tuyển sinh</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('students.index') }}">Học sinh</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.index') }}">Lớp học</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('teachers.index') }}">Giáo viên</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.index') }}">Hồ sơ</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('training.index') }}">Đào tạo</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('exams.index') }}">Khảo thí</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('finance.index') }}">Tài chính</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('affairs.index') }}">Công tác SV</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('graduation.index') }}">Tốt nghiệp</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
+            {{ nav_link("admissions", "Tuyển sinh") }}
+            {{ nav_link("students", "Học sinh") }}
+            {{ nav_link("classes", "Lớp học") }}
+            {{ nav_link("teachers", "Giáo viên") }}
+            {{ nav_link("profiles", "Hồ sơ") }}
+            {{ nav_link("training", "Đào tạo") }}
+            {{ nav_link("exams", "Khảo thí") }}
+            {{ nav_link("finance", "Tài chính") }}
+            {{ nav_link("affairs", "Công tác SV") }}
+            {{ nav_link("graduation", "Tốt nghiệp") }}
+            <li class="nav-item"><a class="nav-link {{ 'active' if endpoint.startswith('auth.accounts') else '' }}" href="{{ url_for('auth.accounts') }}">Tài khoản</a></li>
+            <li class="nav-item"><a class="nav-link {{ 'active' if endpoint.startswith('auth.activity_log') else '' }}" href="{{ url_for('auth.activity_log') }}">Activity log</a></li>
           {% elif current_user.is_authenticated and current_user.role == "teacher" %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('classes.assigned') }}">Lớp được phân công</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('training.assigned') }}">Lịch giảng dạy</a></li>
@@ -37,10 +47,11 @@
         </ul>
         <div class="nav-actions">
           {% if current_user.is_authenticated %}
+            <span class="nav-user">{{ current_user.full_name or current_user.username }}</span>
             <a class="btn btn-outline-secondary touch-target" href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
             <form method="post" action="{{ url_for('auth.logout') }}">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button class="btn btn-outline-primary touch-target" type="submit">Đăng xuất</button>
+              <button class="btn btn-danger touch-target logout-button" type="submit">Đăng xuất</button>
             </form>
           {% else %}
             <a class="btn btn-outline-primary touch-target" href="{{ url_for('auth.login') }}">Đăng nhập</a>
